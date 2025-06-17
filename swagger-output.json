@@ -336,7 +336,7 @@
                   "type": "array",
                   "example": []
                 },
-                "course_smallimage": {
+                "course_small_imageUrl": {
                   "type": "string",
                   "example": "https://cdn.butterandsugar.com/courses/img2.jpg"
                 },
@@ -445,7 +445,7 @@
                       "type": "integer",
                       "example": 8
                     },
-                    "course_smallimage": {
+                    "course_small_imageUrl": {
                       "type": "string",
                       "example": "https://cdn.butterandsugar.com/courses/img2.jpg"
                     },
