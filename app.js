@@ -21,6 +21,7 @@ const allowedOrigins = [
   'https://butter-suger.zeabur.app',
   'https://butter-sugar-test.zeabur.app',
   'https://butter-sugar-backend.zeabur.app',
+  'https://buttersugar-backend.zeabur.app',
   'd144vsl069kyo0.cloudfront.net', //結帳成功回傳頁面顯示
   'https://ccore.newebpay.com' // 藍新金流
 ]
