@@ -8,6 +8,7 @@ const { createAesEncrypt, createShaEncrypt, createAesDecrypt } = require('../ser
 const { In } = require('typeorm')
 const escapeHtml = require('he')  //防止 html 注入攻擊，最後再補上
 const config = require('../config/index')
+const { database } = require('../config/db')
 const MerchantID = config.get('newebpay.MerchantID')
 const Version = config.get('newebpay.Version')
 const NotifyUrl = config.get('newebpay.NotifyUrl')
@@ -439,7 +440,34 @@ const cartController = {
             }
         )
         
-        
+        const findOrder = await orderRepo.findOne({order_number: data.Result.MerchantOrderNo})
+        const user_id = findOrder.user_id
+        const order_id = findOrder.id
+        const purchase_date = findOrder.PayTime
+
+        const orderItemRepo = dataSource.getRepository('order_item')
+        const orderCourse = await orderItemRepo.find({where:{order_id:order_id}})
+
+        const studentCourseRepo = database.getRepository('student_course')
+        const courseRepo = dataSource.getRepository('courses')
+
+        for(const course of orderCourse){
+            const newStudentCourse = studentCourseRepo.create({
+                user_id: user_id,
+                course_id: course.course_id,
+                last_accessed_at: purchase_date
+            })
+            await studentCourseRepo.save(newStudentCourse)
+
+            const findCourse = await courseRepo.findOne({where:{id:course.course_id}})
+
+            if(findCourse){
+                const total_users = findCourse?.total_users?findCourse?.total_users+1:1
+                const updateCourse = await courseRepo.update({id:course.course_id},{total_users: total_users})
+            }
+        }
+
+
         return sendResponse(res, 200, true, '結帳成功', data)
     },
 

@@ -20,6 +20,7 @@ const orderController = {
         .leftJoin('orderItem.order', 'order')
         .leftJoin('orderItem.courses', 'course')
         .where('order.user_id = :user_id', {user_id})
+        .addWhere('order.payment_status = :status', {status: 'paid'})
         .groupBy('order.order_number')
         .addGroupBy('order.final_amount')
         .addGroupBy('order.created_at')
