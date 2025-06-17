@@ -417,6 +417,10 @@ const cartController = {
         const response = req.body
         const data = createAesDecrypt(response.TradeInfo)
 
+        console.log("==========newebpayNotify data===========")
+        console.log(data)
+        console.log("==========newebpayNotify data===========")
+
         const thisShaEncrypt = createShaEncrypt(response.TradeInfo)
     
         if(!thisShaEncrypt === response.TradeSha){
@@ -434,6 +438,7 @@ const cartController = {
             pay_rtn_msg: JSON.stringify(data.Result)
             }
         )
+        
         
         return sendResponse(res, 200, true, '結帳成功', data)
     },
