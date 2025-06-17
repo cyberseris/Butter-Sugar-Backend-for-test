@@ -54,13 +54,13 @@ module.exports = new EntitySchema({
         },
         section: {
             type: 'many-to-one', 
-            target: 'course_section',
+            target: 'course_sections',
             joinColumn: { name: 'section_id' },
             onDelete: 'CASCADE' 
         },
         subsection: {
             type: 'many-to-one', 
-            target: 'course_subsection',
+            target: 'course_subsections',
             joinColumn: { name: 'subsection_id' },
             onDelete: 'CASCADE' 
         }
