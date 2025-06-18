@@ -429,6 +429,9 @@ const cartController = {
 
             return next(appError(400, '付款失敗'))
         } 
+
+        console.log("==========newebpayNotify data 2===========")
+
         const payment_status =  data.Status==='SUCCESS'?'paid':'failed'
         const orderRepo = dataSource.getRepository('order')
         const updateOrder = await orderRepo.update({order_number: data.Result.MerchantOrderNo}, {
@@ -440,7 +443,14 @@ const cartController = {
             }
         )
         
+        console.log("==========newebpayNotify data 3===========")
+
         const findOrder = await orderRepo.findOne({order_number: data.Result.MerchantOrderNo})
+
+        console.log("==========newebpayNotify data 4===========")
+        console.log("findOrder: ", findOrder)
+        console.log("==========newebpayNotify data 4===========")
+
         const user_id = findOrder.user_id
         const order_id = findOrder.id
         const purchase_date = findOrder.PayTime
@@ -448,9 +458,14 @@ const cartController = {
         const orderItemRepo = dataSource.getRepository('order_item')
         const orderCourse = await orderItemRepo.find({where:{order_id:order_id}})
 
+        console.log("==========newebpayNotify data 5===========")
+        console.log("orderCourse: ", orderCourse)
+        console.log("==========newebpayNotify data 5===========")
+
         const studentCourseRepo = database.getRepository('student_course')
         const courseRepo = dataSource.getRepository('courses')
 
+        
         for(const course of orderCourse){
             const newStudentCourse = studentCourseRepo.create({
                 user_id: user_id,
@@ -459,12 +474,21 @@ const cartController = {
             })
             await studentCourseRepo.save(newStudentCourse)
 
+            console.log("==========newebpayNotify data 6===========")
             const findCourse = await courseRepo.findOne({where:{id:course.course_id}})
+
+            console.log("==========newebpayNotify data 7===========")
+            console.log("findCourse: ", findCourse)
+            console.log("==========newebpayNotify data 7===========")
 
             if(findCourse){
                 const total_users = findCourse?.total_users?findCourse?.total_users+1:1
                 const updateCourse = await courseRepo.update({id:course.course_id},{total_users: total_users})
             }
+
+            console.log("==========newebpayNotify data 8===========")
+            console.log("updateCourse: ", updateCourse)
+            console.log("==========newebpayNotify data 8===========")
         }
 
 
