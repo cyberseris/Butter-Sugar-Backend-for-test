@@ -431,6 +431,7 @@ const cartController = {
         } 
 
         console.log("==========newebpayNotify data 2===========")
+        console.log('MerchantOrderNo:', data.Result.MerchantOrderNo)
 
         const payment_status =  data.Status==='SUCCESS'?'paid':'failed'
         const orderRepo = dataSource.getRepository('order')
@@ -444,7 +445,7 @@ const cartController = {
         )
         
         console.log("==========newebpayNotify data 3===========")
-
+        console.log('MerchantOrderNo2:', data.Result.MerchantOrderNo)
         const findOrder = await orderRepo.findOne({where: {order_number: data.Result.MerchantOrderNo}})
 
         console.log("==========newebpayNotify data 4===========")
