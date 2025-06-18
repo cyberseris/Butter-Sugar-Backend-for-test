@@ -686,16 +686,54 @@ const courseController = {
   getMyCourse: async (req, res, next) => {
     const user_id = req.user.id
 
+    //取得我的課程表資料
     const studentCourseRepo = dataSource.getRepository('student_course')
     const findStudentCourse = await studentCourseRepo.createQueryBuilder('student_course')
-    .select(['course.id AS course_id', 'teacher.id AS teacher_id', 'course.course_small_imageUrl AS course_small_imageUrl', 'course.course_name AS course_name', 'student_course.purchase_date AS purchase_date', 'student_course.last_accessed_at AS last_accessed_at', 'student_course.last_subsection_id AS last_subsection_id', 'student_course.completion_percentage AS completion_percentage'])
+    .select(['course.id AS course_id', 'teacher.id AS teacher_id', 'user.name AS teacher_name','course.course_small_imageUrl AS course_small_imageUrl', 'course.course_name AS course_name', 'student_course.purchase_date AS purchase_date', 'student_course.last_accessed_at AS last_accessed_at', 'student_course.last_subsection_id AS last_subsection_id', 'student_course.completion_percentage AS completion_percentage'])
     .leftJoin('student_course.user', 'user')
     .leftJoin('student_course.course', 'course')
     .leftJoin('course.teacher', 'teacher')
     .where('student_course.user_id=:user_id', {user_id: user_id})
     .getRawMany()
 
-    return sendResponse(res, 200, true, '成功取得我的課程', findStudentCourse)
+    const ratingRepo = dataSource.getRepository('ratings')
+
+    //每門課的平均分數
+    const avgRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'ROUND(AVG(rating.rating_score)::numeric, 2) AS avg_rating_score'])
+    .groupBy('rating.course_id')
+    .getRawMany()
+
+    const myRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'rating.rating_score AS rating_score'])
+    .where('rating.user_id=:user_id', {user_id: user_id})
+    .getRawMany()
+
+    //轉成物件
+    const avgRatingMap = Object.fromEntries(avgRatings.map(r => [r.course_id, r.avg_rating_score]))
+    const myRatingMap = Object.fromEntries(myRatings.map(r => [r.course_id, r.rating_score]))
+
+    const result = findStudentCourse.map(studentCourse => ({
+        id: studentCourse.course_id,
+        teacher_id: studentCourse.teacher_id,
+        teacher_name: studentCourse.teacher_name,
+        course_small_imageUrl: studentCourse.course_small_imageUrl,
+        course_name: studentCourse.course_name,
+        course_ratings: {
+          rating_score: myRatingMap[studentCourse.course_id] || '',
+          avg_rating_score:  avgRatingMap[studentCourse.course_id] || ''
+        },
+        student_course: {
+          purchase_date: studentCourse.purchase_date,
+          last_accessed_at: studentCourse.last_accessed_at,
+          last_subsection_id: studentCourse.last_subsection_id,
+          completion_percentage: studentCourse.completion_percentage
+        }
+    }))
+
+    return sendResponse(res, 200, true, '成功取得我的課程', result)
   },
 
     /*
