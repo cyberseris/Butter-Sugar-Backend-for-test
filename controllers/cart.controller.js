@@ -445,7 +445,7 @@ const cartController = {
         
         console.log("==========newebpayNotify data 3===========")
 
-        const findOrder = await orderRepo.findOne({order_number: data.Result.MerchantOrderNo})
+        const findOrder = await orderRepo.findOne({where: {order_number: data.Result.MerchantOrderNo}})
 
         console.log("==========newebpayNotify data 4===========")
         console.log("findOrder: ", findOrder)
