@@ -12,7 +12,7 @@ const validateSchema = require('../middleware/validateSchema.middleware')
 router.get('/list', courseController.getCourseList)
 
 // 取得我的課程列表
-router.get('/my-courses', courseController.getMyCourse)
+router.get('/my-courses', ...handleMiddleware([isAuth], courseController.getMyCourse))
 
 //取得所有類別
 router.get('/course-category', courseController.getCourseCategory)
