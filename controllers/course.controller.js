@@ -670,6 +670,19 @@ const courseController = {
   },
 
 
+  /*
+  * 取得課程章節
+  * @route GET - /api/v1/course/:courseId/course-section 
+  */
+  getMyCourse: async (req, res, next) => {
+    const user_id = req.user.id
+
+    const studentCourseRepo = dataSource.getRepository('student_course')
+    const findStudentCourse = await studentCourseRepo.find({ where:{user_id: user_id} })
+
+    return sendResponse(res, 200, true, '成功取得我的課程', findStudentCourse)
+  },
+
     /*
   * 修改課程章節
   * @route PATCH - /api/v1/course/course-section/:courseSectionId
