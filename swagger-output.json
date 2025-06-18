@@ -829,17 +829,6 @@
         }
       }
     },
-    "/api/v1/order/": {
-      "get": {
-        "tags": ["User"],
-        "summary": "取得所有訂單",
-        "description": "",
-        "responses": {
-          "default": { "description": "" }
-        }
-      }
-    }
-  },
   "security": [
     {
       "BearerAuth": []
