@@ -266,7 +266,7 @@
         }
       }
     },
-    "/api/v1/courses/popular": {
+    "/api/v1/course/popular": {
       "get": {
         "tags": ["Courses"],
         "summary": "取得首頁熱門課程資料",
@@ -278,7 +278,7 @@
         }
       }
     },
-    "/api/v1/courses": {
+    "/api/v1/course/list": {
       "get": {
         "tags": ["Courses"],
         "summary": "取得課程(測試用)",
@@ -519,10 +519,10 @@
         }
       }
       },
-    "/api/v1/courses/course-category": {
+    "/api/v1/course/course-category": {
       "get": {
         "tags": ["Courses"],
-        "summary": "取得課程分類列表(測試用)",
+        "summary": "取得課程分類列表",
         "description": "取得所有課程分類（如麵包、蛋糕、餅乾等）",
           "responses": {
             "200": {
@@ -593,7 +593,7 @@
         }
       }
     },
-    "/api/v1/courses/{courseId}/ratings": {
+    "/api/v1/course/{courseId}/ratings": {
       "post": {
         "tags": ["Courses"],
         "summary": "新增評價（測試用）",
@@ -656,7 +656,7 @@
         }
       }
     },
-    "/api/v1/courses/{courseId}": {
+    "/api/v1/course/{courseId}": {
       "get": {
         "tags": ["Courses"],
         "summary": "取得單一課程資料",
