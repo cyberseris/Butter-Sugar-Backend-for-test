@@ -698,13 +698,14 @@ const courseController = {
 
     const ratingRepo = dataSource.getRepository('ratings')
 
-    //每門課的平均分數
+    //每門課的平均評價分數
     const avgRatings = await ratingRepo.createQueryBuilder('rating')
     .select(['rating.course_id AS course_id', 
             'ROUND(AVG(rating.rating_score)::numeric, 2) AS avg_rating_score'])
     .groupBy('rating.course_id')
     .getRawMany()
 
+    //每門課的我的評價分數
     const myRatings = await ratingRepo.createQueryBuilder('rating')
     .select(['rating.course_id AS course_id', 
             'rating.rating_score AS rating_score'])
