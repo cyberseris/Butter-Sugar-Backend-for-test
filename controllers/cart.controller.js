@@ -463,7 +463,7 @@ const cartController = {
         console.log("orderCourse: ", orderCourse)
         console.log("==========newebpayNotify data 5===========")
 
-        const studentCourseRepo = database.getRepository('student_course')
+        const studentCourseRepo = dataSource.getRepository('student_course')
         const courseRepo = dataSource.getRepository('courses')
 
         
