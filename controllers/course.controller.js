@@ -671,14 +671,29 @@ const courseController = {
 
 
   /*
-  * 取得課程章節
-  * @route GET - /api/v1/course/:courseId/course-section 
+  * 取得我的課程列表
+  * @route GET - /api/v1/course/my-course 
   */
-  getMyCourse: async (req, res, next) => {
+/*   getMyCourse: async (req, res, next) => {
     const user_id = req.user.id
 
     const studentCourseRepo = dataSource.getRepository('student_course')
     const findStudentCourse = await studentCourseRepo.find({ where:{user_id: user_id} })
+
+    return sendResponse(res, 200, true, '成功取得我的課程', findStudentCourse)
+  }, */
+
+  getMyCourse: async (req, res, next) => {
+    const user_id = req.user.id
+
+    const studentCourseRepo = dataSource.getRepository('student_course')
+    const findStudentCourse = await studentCourseRepo.createQueryBuilder('student_course')
+    .select(['course.id AS course_id', 'teacher.id AS teacher_id', 'course.course_small_imageUrl AS course_small_imageUrl', 'course.course_name AS course_name', 'student_course.purchase_date AS purchase_date', 'student_course.last_accessed_at AS last_accessed_at', 'student_course.last_subsection_id AS last_subsection_id', 'student_course.completion_percentage AS completion_percentage'])
+    .leftJoin('student_course.user', 'user')
+    .leftJoin('student_course.course', 'course')
+    .leftJoin('course.teacher', 'teacher')
+    .where('student_course.user_id=:user_id', {user_id: user_id})
+    .getRawMany()
 
     return sendResponse(res, 200, true, '成功取得我的課程', findStudentCourse)
   },
