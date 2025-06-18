@@ -57,9 +57,16 @@ const cartController = {
         await dataSource.transaction(async (manager) => {
             const cartsRepo = manager.getRepository('carts');
             const cartItemsRepo = manager.getRepository('cart_items');
+            const courseRepo = manager.getRepository('courses');
 
             const user_id = req.user.id;
             const { course_id } = req.body;
+
+            //檢查課程是否存在且狀態為上架
+            const findCourse = await courseRepo.findOne({where:{ id: course_id,  course_status: '上架'}})
+            if(!findCourse){
+                return next(appError(404, "課程不存在或未上架"))
+            }
 
             try {
                 // 查看此使用者是否建立購物車
@@ -446,6 +453,7 @@ const cartController = {
         
         console.log("==========newebpayNotify data 3===========")
         console.log('MerchantOrderNo2:', data.Result.MerchantOrderNo)
+        //取得訂單
         const findOrder = await orderRepo.findOne({where: {order_number: data.Result.MerchantOrderNo}})
 
         console.log("==========newebpayNotify data 4===========")
@@ -456,6 +464,7 @@ const cartController = {
         const order_id = findOrder.id
         const purchase_date = findOrder.PayTime
 
+        // 取得訂單詳細項目
         const orderItemRepo = dataSource.getRepository('order_item')
         const orderCourse = await orderItemRepo.find({where:{order_id:order_id}})
 
@@ -463,13 +472,11 @@ const cartController = {
         console.log("orderCourse: ", orderCourse)
         console.log("==========newebpayNotify data 5===========")
 
+        //新增學生課程表課程
         const studentCourseRepo = dataSource.getRepository('student_course')
         const courseRepo = dataSource.getRepository('courses')
 
-        let newStudentCourse
-        let findCourse
-        let total_users
-        let updateCourse
+        let newStudentCourse, findCourse, total_users, updateCourse
         for(const course of orderCourse){
             newStudentCourse = studentCourseRepo.create({
                 user_id: user_id,
@@ -485,7 +492,7 @@ const cartController = {
             console.log("findCourse: ", findCourse)
             console.log("==========newebpayNotify data 7===========")
 
-
+            // 新增課程人數
             if(findCourse){
                 total_users = findCourse?.total_users?findCourse?.total_users+1:1
                 updateCourse = await courseRepo.update({id:course.course_id},{total_users: total_users})
@@ -495,7 +502,6 @@ const cartController = {
             console.log("updateCourse: ", updateCourse)
             console.log("==========newebpayNotify data 8===========")
         }
-
 
         return sendResponse(res, 200, true, '結帳成功', data)
     },
