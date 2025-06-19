@@ -124,6 +124,7 @@ const teacherController = {
       'teacher.slogan AS teacher_slogan',
       'user.id AS user_id',
       'user.name AS teacher_name',
+      'user.profile_image_url AS teacher_profile_image_url',
     "ROW_NUMBER() OVER (PARTITION BY teacher.id ORDER BY course.created_at DESC) AS rn"])
     .leftJoin('course.teacher', 'teacher') //relations:teacher => course.teacher
     .leftJoin('teacher.user', 'user')
