@@ -704,21 +704,14 @@ const courseController = {
   */
     getFavoriteCourse: async (req, res, next) => {
       const user_id = req.user.id
-    
+      console.log("==============getFavoriteCourse==============")
       const favoriteRepo = dataSource.getRepository('favorite_course')
       const findFavorite = await favoriteRepo.find({
         where:{user_id: user_id},
         relations: ['course']
       })
   
-      if(findFavorite){
-        return sendResponse(res, 200, true, '你已經收藏過此課程', findFavorite)
-      }
-  
-      const newFavorite = favoriteRepo.create({user_id: user_id,course_id:course_id})
-      const favoriteResult = await favoriteRepo.save(newFavorite)
-  
-      return sendResponse(res, 200, true, '成功收藏課程', favoriteResult)
+      return sendResponse(res, 200, true, '成功收藏課程', findFavorite)
     },
 
   /*
