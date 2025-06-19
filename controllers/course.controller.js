@@ -669,6 +669,79 @@ const courseController = {
     return sendResponse(res, 200, true, '取得課程章節成功', findCourseSection)
   },
 
+  
+  /*
+  * 收藏課程
+  * @route POST /favorites/:courseId
+  */
+  postFavoriteCourse: async (req, res, next) => {
+    const user_id = req.user.id
+    const course_id = req.params.courseId
+
+    const courseRepo = dataSource.getRepository('courses')
+    const findCourse = await courseRepo.findOne({ where:{id: course_id} })
+    
+    if(!findCourse){
+      return next(appError(404, '課程不存在'))
+    }
+
+    const favoriteRepo = dataSource.getRepository('favorite_course')
+    const findFavorite = await favoriteRepo.findOne({where:{user_id: user_id,course_id:course_id}})
+
+    if(findFavorite){
+      return sendResponse(res, 200, true, '你已經收藏過此課程', findFavorite)
+    }
+
+    const newFavorite = favoriteRepo.create({user_id: user_id,course_id:course_id})
+    const favoriteResult = await favoriteRepo.save(newFavorite)
+
+    return sendResponse(res, 200, true, '成功收藏課程', favoriteResult)
+  },
+
+  /*
+  * 取得收藏課程
+  * @route GET /favorites
+  */
+    getFavoriteCourse: async (req, res, next) => {
+      const user_id = req.user.id
+    
+      const favoriteRepo = dataSource.getRepository('favorite_course')
+      const findFavorite = await favoriteRepo.find({
+        where:{user_id: user_id},
+        relations: ['course']
+      })
+  
+      if(findFavorite){
+        return sendResponse(res, 200, true, '你已經收藏過此課程', findFavorite)
+      }
+  
+      const newFavorite = favoriteRepo.create({user_id: user_id,course_id:course_id})
+      const favoriteResult = await favoriteRepo.save(newFavorite)
+  
+      return sendResponse(res, 200, true, '成功收藏課程', favoriteResult)
+    },
+
+  /*
+  * 取消收藏課程
+  * @route GET /favorites
+  */
+  deleteFavoriteCourse: async (req, res, next) => {
+    const user_id = req.user.id
+  
+    const favoriteRepo = dataSource.getRepository('favorite_course')    
+    const deleteResult = await favoriteRepo.delete({where:{user_id: user_id, course_id:course_id}})
+
+    if(!deleteResult.affected){
+      return next(appError(404, '課程不存在'))
+    }
+
+    const findFavorite = await favoriteRepo.find({
+      where:{user_id: user_id, course_id:course_id},
+      relations: ['course']
+    })
+
+    return sendResponse(res, 200, true, '成功刪除收藏課程', findFavorite)
+  },
 
   /*
   * 取得我的課程列表

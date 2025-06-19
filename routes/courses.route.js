@@ -25,6 +25,17 @@ router.get('/popular', courseController.getPopularCourses)
 
 // 取得單一課程資料，要放後面，其他 /xxx 要放前面
 router.get('/:courseId', courseController.getCourse)
+
+// 收藏課程
+router.post('/favorites/:courseId', courseController.postFavoriteCourse)
+
+// 取得收藏課程
+router.get('/favorites', courseController.getFavoriteCourse)
+
+// 收藏課程
+router.delete('/favorites/:courseId', courseController.deleteFavoriteCourse)
+
+// 新增標題
 router.post('/create/title', ...handleMiddleware([isAuth], courseController.createCourseTitle)) // 新增課程
 router.post(
   '/:courseId/save',
