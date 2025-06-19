@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const passport = require('passport')
 const userController = require('../controllers/user.controller')
+const orderController = require('../controllers/order.controller')
 const isAuth = require('../middleware/isAuth.middleware')
 const validateSchema = require('../middleware/validateSchema.middleware')
 const { updateUserSchema } = require('../schema/user.schema')
@@ -47,9 +48,9 @@ router.get('/check', ...handleMiddleware([isAuth], userController.getCheck))
 ) */
 
 
-/* // 取得所有訂單
+// 取得所有訂單
 router.get('/orders', ...handleMiddleware([isAuth], orderController.getOrderList))
 // 取得所有訂單
-router.get('/orders/:orderNumber', ...handleMiddleware([isAuth], orderController.getOrder)) */
+router.get('/orders/:orderNumber', ...handleMiddleware([isAuth], orderController.getOrder))
 
 module.exports = router
