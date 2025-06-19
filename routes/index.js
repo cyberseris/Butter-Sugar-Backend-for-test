@@ -13,6 +13,6 @@ module.exports = (app) => {
   app.use('/api/v1/course', coursesRouter)
   app.use('/api/v1/course', courseUploadRoutes)
   app.use('/api/v1/cart', cartRouter)
-  app.use('/api/v1/order', orderRouter)
+  app.use('/api/v1/orders', orderRouter)
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 }
