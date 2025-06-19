@@ -35,6 +35,9 @@ const orderController = {
     async getOrder(req, res, next){
         const user_id = req.user.id
         const order_number = req.params.order_number
+        console.log("==========getOrder=========")
+        console.log(order_number)
+        console.log("==========getOrder=========")
         
         const orderItemRepo = dataSource.getRepository('order_item')
         const result = await orderItemRepo.createQueryBuilder('orderItem')
