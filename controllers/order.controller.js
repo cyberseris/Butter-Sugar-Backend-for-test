@@ -55,7 +55,7 @@ const orderController = {
 
         const parsedResult = result.map(row => ({
             ...row,
-            pay_rtn_msg: pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null
+            pay_rtn_msg: row.pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null
         }))
 
         return sendResponse(res, 200, true, '成功取得訂單', parsedResult)
