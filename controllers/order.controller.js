@@ -34,7 +34,7 @@ const orderController = {
     */
     async getOrder(req, res, next){
         const user_id = req.user.id
-        const order_number = req.params.order_number
+        const order_number = req.params.orderNumber
         console.log("==========getOrder=========")
         console.log(order_number)
         console.log("==========getOrder=========")
