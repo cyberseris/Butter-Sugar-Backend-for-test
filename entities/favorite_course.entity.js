@@ -29,22 +29,22 @@ module.exports = new EntitySchema({
     relations: {
         user: {
             target: 'users',
-            type: 'many-to-one',
-            inverseSide: 'carts',
+            type: 'many-to-many',
+            inverseSide: 'favorite_course',
             joinColumn: {
                 name: 'user_id',
                 referencedColumnName: 'id',
-                foreignKeyConstraintName: 'carts_users_id_fk'
+                foreignKeyConstraintName: 'favorite_course_user_id_fk'
             }
         },
         course: {
-            target: 'courses', // 對應類別的實體
-            type: 'many-to-one', // 多個評價對應一個課程
-            inverseSide: 'ratings',
+            target: 'courses', 
+            type: 'many-to-many', 
+            inverseSide: 'favorite_course',
             joinColumn: { 
                 name: 'course_id',
                 referencedColumnName: 'id', 
-                foreignKeyConstraintName: 'ratings_courses_id_fk'
+                foreignKeyConstraintName: 'favorite_course_course_id_fk'
             }
         }
     }
