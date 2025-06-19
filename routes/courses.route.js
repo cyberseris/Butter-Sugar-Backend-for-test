@@ -27,13 +27,13 @@ router.get('/popular', courseController.getPopularCourses)
 router.get('/:courseId', courseController.getCourse)
 
 // 收藏課程
-router.post('/favorites/:courseId', courseController.postFavoriteCourse)
+router.post('/favorites/:courseId', ...handleMiddleware([isAuth], courseController.postFavoriteCourse))
 
 // 取得收藏課程
-router.get('/favorites', courseController.getFavoriteCourse)
+router.get('/favorites', ...handleMiddleware([isAuth], courseController.getFavoriteCourse))
 
 // 收藏課程
-router.delete('/favorites/:courseId', courseController.deleteFavoriteCourse)
+router.delete('/favorites/:courseId', ...handleMiddleware([isAuth], courseController.deleteFavoriteCourse))
 
 // 新增標題
 router.post('/create/title', ...handleMiddleware([isAuth], courseController.createCourseTitle)) // 新增課程
