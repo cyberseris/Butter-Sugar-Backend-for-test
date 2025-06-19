@@ -1681,6 +1681,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "取得單筆訂單",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://buttersugar-backend.zeabur.app/api/v1/users/orders/1750202216",
+							"protocol": "https",
+							"host": [
+								"buttersugar-backend",
+								"zeabur",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"orders",
+								"1750202216"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
