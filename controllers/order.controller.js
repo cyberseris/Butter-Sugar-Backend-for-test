@@ -53,7 +53,12 @@ const orderController = {
         .addGroupBy('order.created_at')
         .getRawMany()
 
-        return sendResponse(res, 200, true, '成功取得訂單', result)
+        const parsedResult = result.map(row => ({
+            ...row,
+            pay_rtn_msg: pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null
+        }))
+
+        return sendResponse(res, 200, true, '成功取得訂單', parsedResult)
     }
 }
 
