@@ -92,6 +92,9 @@
         "tags": ["User"],
         "summary": "取得單一訂單",
         "description": "",
+        "parameters": [
+          { "name": "orderNumber", "in": "path", "required": true, "type": "string" }
+        ],
         "responses": {
           "200": { "description": "OK" }
         }
