@@ -20,6 +20,6 @@ const dataSource = new DataSource({
   ssl: config.get('db.ssl'),
 })
 console.log("============dataSource entities==========")
-console.log(dataSource.entities)
+console.log(dataSource)
 console.log("============dataSource entities==========")
 module.exports = { dataSource }
