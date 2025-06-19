@@ -134,6 +134,7 @@ const teacherController = {
     .select(['t.teacher_id',
               't.user_id',
               't.teacher_name',
+              't.profile_image_url',
               't.teacher_specialization',
               't.teacher_slogan',
               't.course_id',
