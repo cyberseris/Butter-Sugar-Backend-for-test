@@ -71,9 +71,14 @@ const orderController = {
         console.log("courseResult: ", courseResult)
         console.log("==============getOrder courseResult=============")
 
+        console.log("==============getOrder orderResult=============")
+        console.log("orderResult: ", orderResult)
+        console.log("orderResult.pay_rtn_msg: ", orderResult.pay_rtn_msg)
+        onsole.log("==============getOrder orderResult=============")
+
         const parsedResult = orderResult.map(row => ({
             ...row,
-            payway: pay_rtn_msg.PaymentType, 
+            payway: JSON.parse(row.pay_rtn_msg).PaymentType, 
             order_items: courseResult
             /* ,
             pay_rtn_msg: row.pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null */
