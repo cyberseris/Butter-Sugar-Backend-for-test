@@ -710,8 +710,12 @@ const courseController = {
         where:{user_id: user_id},
         relations: ['course']
       })
+
+      console.log("==============getFavoriteCourse findFavorite==============")
+      console.log(findFavorite)
+      console.log("==============getFavoriteCourse findFavorite==============")
   
-      return sendResponse(res, 200, true, '成功收藏課程', findFavorite)
+      return sendResponse(res, 200, true, '成功取得收藏課程', findFavorite)
     },
 
   /*
