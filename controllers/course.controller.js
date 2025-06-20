@@ -928,7 +928,15 @@ const courseController = {
     //取得我的課程表資料
     const studentCourseRepo = dataSource.getRepository('student_course')
     const findStudentCourse = await studentCourseRepo.createQueryBuilder('student_course')
-    .select(['course.id AS course_id', 'teacher.id AS teacher_id', 'user.name AS teacher_name','course.course_small_imageUrl AS course_small_imageUrl', 'course.course_name AS course_name', 'student_course.purchase_date AS purchase_date', 'student_course.last_accessed_at AS last_accessed_at', 'student_course.last_subsection_id AS last_subsection_id', 'student_course.completion_percentage AS completion_percentage'])
+    .select(['course.id AS course_id', 
+      'teacher.id AS teacher_id', 
+      'user.name AS teacher_name',
+      'course.course_small_imageUrl AS course_small_imageUrl', 
+      'course.course_name AS course_name', 
+      'student_course.purchase_date AS purchase_date', 
+      'student_course.last_accessed_at AS last_accessed_at', 
+      'student_course.last_subsection_id AS last_subsection_id', 
+      'student_course.completion_percentage AS completion_percentage'])
     .leftJoin('student_course.user', 'user')
     .leftJoin('student_course.course', 'course')
     .leftJoin('course.teacher', 'teacher')
@@ -954,6 +962,10 @@ const courseController = {
     //轉成物件
     const avgRatingMap = Object.fromEntries(avgRatings.map(r => [r.course_id, r.avg_rating_score]))
     const myRatingMap = Object.fromEntries(myRatings.map(r => [r.course_id, r.rating_score]))
+
+    console.log("==============studentCourse==============")
+    console.log("findStudentCourse: ", findStudentCourse)
+    console.log("==============studentCourse==============")
 
     const result = findStudentCourse.map(studentCourse => ({
         id: studentCourse.course_id,
