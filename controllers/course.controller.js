@@ -971,7 +971,7 @@ const courseController = {
         id: studentCourse.course_id,
         teacher_id: studentCourse.teacher_id,
         teacher_name: studentCourse.teacher_name,
-        course_small_imageUrl: studentCourse.course_small_imageUrl,
+        course_small_imageUrl: studentCourse.course_small_imageurl,
         course_name: studentCourse.course_name,
         course_ratings: {
           rating_score: myRatingMap[studentCourse.course_id] || '',
