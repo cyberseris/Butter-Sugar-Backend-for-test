@@ -693,9 +693,9 @@ const courseController = {
     }
 
     const newFavorite = favoriteRepo.create({user_id: user_id,course_id:course_id})
-    const favoriteResult = await favoriteRepo.save(newFavorite)
+    await favoriteRepo.save(newFavorite)
 
-    const findFavorites = await favoriteRepo.createQueryBuilder('favorite_course')
+    const findFavoriteCourse = await favoriteRepo.createQueryBuilder('favorite_course')
     .select(['favorite_course.id AS id',
               'user.name AS teacher_name',
               'course.id AS course_id',
@@ -719,7 +719,39 @@ const courseController = {
     .where('favorite_course.user_id = :user_id', {user_id:user_id})
     .getRawMany()
 
-    return sendResponse(res, 200, true, '成功收藏課程', findFavorites)
+    const ratingRepo = dataSource.getRepository('ratings')
+
+    //每門課的平均評價分數
+    const avgRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'ROUND(AVG(rating.rating_score)::numeric, 2) AS avg_rating_score',
+            'COUNT(rating.id) AS course_rating_users',])
+    .groupBy('rating.course_id')
+    .getRawMany()
+
+    //每門課的我的評價分數
+    const myRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'rating.rating_score AS rating_score'])
+    .where('rating.user_id=:user_id', {user_id: user_id})
+    .getRawMany()
+
+    //轉成物件
+    const avgRatingMap = Object.fromEntries(avgRatings.map(r => [r.course_id, {avg_rating_score: r.avg_rating_score, course_rating_users: r.course_rating_users}]))
+    const myRatingMap = Object.fromEntries(myRatings.map(r => [r.course_id, r.rating_score]))
+
+
+    const findFavoriteResult = findFavoriteCourse.map( findFavorite => {
+      return {
+        ...findFavorite,
+        course_ratings: {
+          rating_score: myRatingMap[findFavorite.course_id] || '', 
+          avg_rating_score: avgRatingMap[findFavorite.course_id] || ''
+        }  
+      }
+    })
+
+    return sendResponse(res, 200, true, '成功收藏課程', findFavoriteResult)
   },
 
   /*
@@ -730,7 +762,7 @@ const courseController = {
     const user_id = req.user.id
 
     const favoriteRepo = dataSource.getRepository('favorite_course')
-    const findFavorite = await favoriteRepo.createQueryBuilder('favorite_course')
+    const findFavoriteCourse = await favoriteRepo.createQueryBuilder('favorite_course')
     .select(['favorite_course.id AS id',
               'user.name AS teacher_name',
               'course.id AS course_id',
@@ -754,16 +786,39 @@ const courseController = {
     .where('favorite_course.user_id = :user_id', {user_id:user_id})
     .getRawMany()
 
-/*     const findFavorite = await favoriteRepo.find({
-      where:{user_id: user_id},
-      relations: ['course']
-    }) */
+    const ratingRepo = dataSource.getRepository('ratings')
 
-    console.log("==============getFavoriteCourse findFavorite==============")
-    console.log(findFavorite)
-    console.log("==============getFavoriteCourse findFavorite==============")
+    //每門課的平均評價分數
+    const avgRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'ROUND(AVG(rating.rating_score)::numeric, 2) AS avg_rating_score',
+            'COUNT(rating.id) AS course_rating_users',])
+    .groupBy('rating.course_id')
+    .getRawMany()
 
-    return sendResponse(res, 200, true, '成功取得收藏課程', findFavorite)
+    //每門課的我的評價分數
+    const myRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'rating.rating_score AS rating_score'])
+    .where('rating.user_id=:user_id', {user_id: user_id})
+    .getRawMany()
+
+    //轉成物件
+    const avgRatingMap = Object.fromEntries(avgRatings.map(r => [r.course_id, {avg_rating_score: r.avg_rating_score, course_rating_users: r.course_rating_users}]))
+    const myRatingMap = Object.fromEntries(myRatings.map(r => [r.course_id, r.rating_score]))
+
+
+    const findFavoriteResult = findFavoriteCourse.map( findFavorite => {
+      return {
+        ...findFavorite,
+        course_ratings: {
+          rating_score: myRatingMap[findFavorite.course_id] || '', 
+          avg_rating_score: avgRatingMap[findFavorite.course_id] || ''
+        }  
+      }
+    })
+
+    return sendResponse(res, 200, true, '成功取得收藏課程', findFavoriteResult)
   },
 
   /*
@@ -781,7 +836,7 @@ const courseController = {
       return next(appError(404, '課程不存在'))
     }
 
-    const findFavorite = await favoriteRepo.createQueryBuilder('favorite_course')
+    const findFavoriteCourse = await favoriteRepo.createQueryBuilder('favorite_course')
     .select(['favorite_course.id AS id',
               'user.name AS teacher_name',
               'course.id AS course_id',
@@ -805,7 +860,40 @@ const courseController = {
     .where('favorite_course.user_id = :user_id', {user_id:user_id})
     .getRawMany()
 
-    return sendResponse(res, 200, true, '成功刪除收藏課程', findFavorite)
+    const ratingRepo = dataSource.getRepository('ratings')
+
+    //每門課的平均評價分數
+    const avgRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'ROUND(AVG(rating.rating_score)::numeric, 2) AS avg_rating_score',
+            'COUNT(rating.id) AS course_rating_users',])
+    .groupBy('rating.course_id')
+    .getRawMany()
+
+    //每門課的我的評價分數
+    const myRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'rating.rating_score AS rating_score'])
+    .where('rating.user_id=:user_id', {user_id: user_id})
+    .getRawMany()
+
+    //轉成物件
+    const avgRatingMap = Object.fromEntries(avgRatings.map(r => [r.course_id, {avg_rating_score: r.avg_rating_score, course_rating_users: r.course_rating_users}]))
+    const myRatingMap = Object.fromEntries(myRatings.map(r => [r.course_id, r.rating_score]))
+
+
+    const findFavoriteResult = findFavoriteCourse.map( findFavorite => {
+      return {
+        ...findFavorite,
+        course_ratings: {
+          rating_score: myRatingMap[findFavorite.course_id] || '', 
+          avg_rating_score: avgRatingMap[findFavorite.course_id] || ''
+        }  
+      }
+    })
+
+
+    return sendResponse(res, 200, true, '成功刪除收藏課程', findFavoriteResult)
   },
 
   /*
