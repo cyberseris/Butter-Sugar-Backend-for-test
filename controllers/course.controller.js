@@ -612,26 +612,24 @@ const courseController = {
     const answerRepo = dataSource.getRepository('answer')
 
     // 新增每個問題的回答陣列
-/*     for (const question of findQuestion){ */
-        const findAnswer = await answerRepo.createQueryBuilder('answer')
-        .select([
-          'answer.user_id AS user_id',
-          'user.name AS user_name',
-          'user.profile_image_url AS profile_image_url',
-          'answer.answer_text AS answer_text',
-          'answer.user_role AS user_role',
-          'answer.created_at AS created_at'
-        ])
-        .leftJoin('answer.user', 'user')
-        .where('answer.question_id=:question_id', { question_id: findQuestion.id })
-        .orderBy('answer.created_at', 'ASC')
-        .getRawMany()
-        
-        for( const answer of findAnswer) {
-          answer.is_instructor = answer.user_id === findUser.user_id
-        }
-        findQuestion.answers = findAnswer      
-  /*   }  */
+    const findAnswer = await answerRepo.createQueryBuilder('answer')
+    .select([
+      'answer.user_id AS user_id',
+      'user.name AS user_name',
+      'user.profile_image_url AS profile_image_url',
+      'answer.answer_text AS answer_text',
+      'answer.user_role AS user_role',
+      'answer.created_at AS created_at'
+    ])
+    .leftJoin('answer.user', 'user')
+    .where('answer.question_id=:question_id', { question_id: findQuestion.id })
+    .orderBy('answer.created_at', 'ASC')
+    .getRawMany()
+    
+    for( const answer of findAnswer) {
+      answer.is_instructor = answer.user_id === findUser.user_id
+    }
+    findQuestion.answers = findAnswer      
 
     return sendResponse(res, 200, true, '取得課程問題列表', findQuestion)
   }),

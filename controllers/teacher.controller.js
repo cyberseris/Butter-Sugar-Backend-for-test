@@ -162,7 +162,7 @@ const teacherController = {
     // 取得課程資料, 不用 relations: ['teacher']，拆開請求比較好分類
     const coursesRepo = dataSource.getRepository('courses')
     const findCourses = await coursesRepo.find({
-      select: ['id', 'course_banner_imageUrl', 'course_name', 'course_hours','origin_price', 'sell_price', 'total_users'],
+      select: ['id', 'course_small_imageUrl', 'course_name', 'course_hours','origin_price', 'sell_price', 'total_users'],
       where: { teacher_id:teacherId }
     })
 
