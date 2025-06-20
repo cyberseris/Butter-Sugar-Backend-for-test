@@ -1,5 +1,6 @@
 const { dataSource } = require('../db/data-source')
 const { appError, sendResponse } = require('../utils/responseFormat')
+const wrapAsync = require('../utils/wrapAsync')
 const cleanUndefinedFields = require('../utils/cleanUndefinedFields')
 
 const orderController = {
@@ -7,7 +8,7 @@ const orderController = {
     * 取得所有訂單
     * @route PATCH - /api/v1/users/orders
     */
-    async getOrderList(req, res, next){
+    getOrderList: wrapAsync(async (req, res, next) => {
         const user_id = req.user.id
         
         const orderItemRepo = dataSource.getRepository('order_item')
@@ -36,13 +37,13 @@ const orderController = {
         })
         
         return sendResponse(res, 200, true, '成功取得訂單', orderResult)
-    },
+    }),
 
     /*
     * 取得單筆訂單
     * @route PATCH - /api/v1/users/order/:order-number
     */
-    async getOrder(req, res, next){
+    getOrder: wrapAsync(async (req, res, next) => {
         const user_id = req.user.id
         const order_number = req.params.orderNumber
         
@@ -98,7 +99,7 @@ const orderController = {
         })
 
         return sendResponse(res, 200, true, '成功取得訂單', parsedResult)
-    }
+    })
 }
 
 module.exports = orderController

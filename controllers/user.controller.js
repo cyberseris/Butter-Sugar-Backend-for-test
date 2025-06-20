@@ -1,5 +1,6 @@
 const { dataSource } = require('../db/data-source')
 const { appError, sendResponse } = require('../utils/responseFormat')
+const wrapAsync = require('../utils/wrapAsync')
 const { generateJWT, verifyJWT } = require('../utils/jwtUtils')
 const cleanUndefinedFields = require('../utils/cleanUndefinedFields')
 const storage = require('../services/storage')
@@ -9,7 +10,7 @@ const userController = {
   * 取得 google 登入後使用者基本資料
   * @route GET - /api/v1/users/auth/google/callback
   */
-  async getGoogleProfile(req, res, next) {
+  getGoogleProfile: wrapAsync(async (req, res, next) => {
     // #swagger.ignore = true
     try {
       // 確保 passport 已帶入 user 資料
@@ -82,13 +83,13 @@ const userController = {
     } catch (error) {
       next(error)
     }
-  },
+  }),
 
   /*
   * 取得使用者資料
   * @route GET - /api/v1/users/info
   */
-  async getUserData(req, res, next) {
+  getUserData: wrapAsync(async (req, res, next) => {
     try {
       const userId = req.user.id
       const userRepo = dataSource.getRepository('users')
@@ -117,13 +118,13 @@ const userController = {
     } catch (error) {
       next(error)
     }
-  },
+  }),
 
   /*
   * 驗證使用者是否登入
   * @route GET - /api/v1/users/check
   */
-  async getCheck(req, res, next) {
+  getCheck: wrapAsync(async (req, res, next) => {
     const authHeader = req.headers.authorization
     if (!authHeader || !authHeader.startsWith('Bearer')) {
       //401: 請先登入!
@@ -158,13 +159,13 @@ const userController = {
     }
 
     return sendResponse(res, 200, true, '驗證成功')
-  },
+  }),
 
   /*
   * 更新使用者資料
   * @route PATCH - /api/v1/users/update
   */
-  async updateUserData(req, res, next) {
+  updateUserData: wrapAsync(async (req, res, next) => {
     try {
       const userId = req.user.id
       const { name, nickname, phone, birthday, address } = req.body
@@ -216,7 +217,7 @@ const userController = {
     } catch (error) {
       return next(error)
     }
-  },
+  }),
 }
 
 module.exports = userController

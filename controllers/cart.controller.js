@@ -1,5 +1,6 @@
 const { dataSource } = require('../db/data-source')
 const { appError, sendResponse } = require('../utils/responseFormat')
+const wrapAsync = require('../utils/wrapAsync')
 const cleanUndefinedFields = require('../utils/cleanUndefinedFields')
 const getCartItemDetails = require('../services/cart/cartItemDetails')
 const summaryCartItems = require('../services/cart/summaryCartItems')
@@ -20,7 +21,7 @@ const cartController = {
    * 取得購物車資料
    * @route GET /api/v1/cart
    */
-    async getCartItems(req, res, next){
+    getCartItems: wrapAsync(async (req, res, next) => {
         const user_id = req.user.id;
 
         try{
@@ -47,13 +48,13 @@ const cartController = {
         }catch(error){
             next(error)
         }
-    },
+    }),
 
     /*
    * 購物車加入課程, transaction 版, 只要一個資料表新增出錯，全部都 rollback！
    * @route POST /api/v1/cart
    */
-    async postCartItems(req, res, next){
+    postCartItems: wrapAsync(async (req, res, next) => {
         await dataSource.transaction(async (manager) => {
             const cartsRepo = manager.getRepository('carts');
             const cartItemsRepo = manager.getRepository('cart_items');
@@ -109,7 +110,7 @@ const cartController = {
                 next(error)
             }                
         })
-    },
+    }),
 
     //
     /**
@@ -121,7 +122,7 @@ const cartController = {
     *    (2) 沒有： 批次新增 
     * 4. isInvalid 給 user 錯誤顯示        
     */
-    async mergeCartItems(req, res, next){
+    mergeCartItems: wrapAsync(async (req, res, next) => {
         const user_id = req.user.id;
         const { course_ids } = req.body;
 
@@ -201,13 +202,13 @@ const cartController = {
                 next(error)
             }                
         })
-    },
+    }),
 
     /*
    * 刪除購物車資料
    * @route DELETE /api/v1/cart/:cartItemId
    */
-    async deleteCartItems(req, res, next){
+    deleteCartItems: wrapAsync(async (req, res, next) => {
         const user_id = req.user.id;
         const { cartItemId } = req.params
 
@@ -252,13 +253,13 @@ const cartController = {
         }catch(error){
             next(error)
         }
-    },
+    }),
 
     /*
    * 結帳
    * @route POST - /api/v1/cart/checkout
    */
-    async checkout(req, res, next){
+    checkout: wrapAsync(async (req, res, next) => {
         const user_id = req.user.id
         const { coupon_id, coupon, discount_amount } = req.body       
 
@@ -356,13 +357,13 @@ const cartController = {
         }catch(error){
             next(error)
         }
-    },
+    }),
 
     /*
    * 收到藍新金流訊息, 傳送給前端
    * @route POST - /api/v1/payment/newebpay_return
    */
-    async newebpayReturn(req, res, next){
+    newebpayReturn: wrapAsync(async (req, res, next) => {
         // #swagger.ignore = true
         const response = req.body
         const data = createAesDecrypt(response.TradeInfo)
@@ -422,13 +423,13 @@ const cartController = {
                     "item_count": result.length
                 }
         }) */
-    },
+    }),
 
     /*
    * 收到藍新金流訊息, 後端更新資料庫狀態
    * @route POST - /api/v1/payment/newebpay_notify
    */
-    async newebpayNotify(req, res, next){
+    newebpayNotify: wrapAsync(async (req, res, next) => {
         // #swagger.ignore = true
         const response = req.body
         const data = createAesDecrypt(response.TradeInfo)
@@ -512,7 +513,7 @@ const cartController = {
         }
 
         return sendResponse(res, 200, true, '結帳成功', data)
-    },
+    }),
 
 }
 module.exports = cartController

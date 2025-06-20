@@ -1,5 +1,6 @@
 const { dataSource } = require('../db/data-source')
 const { appError, sendResponse } = require('../utils/responseFormat')
+const wrapAsync = require('../utils/wrapAsync')
 const cleanUndefinedFields = require('../utils/cleanUndefinedFields')
 const storage = require('../services/storage')
 const updateUserAndTeacher = require('../services/teacher/updateUserAndTeacher')
@@ -10,7 +11,7 @@ const teacherController = {
    * 取得教師資料
    * @route GET - /api/v1/teacher/profile
    */
-  async getTeacherData(req, res, next) {
+  getTeacherData: wrapAsync(async (req, res, next) => {
     try {
       const userId = req.user.id
       const teacherRepo = dataSource.getRepository('teacher')
@@ -53,13 +54,13 @@ const teacherController = {
     } catch (error) {
       next(error)
     }
-  },
+  }),
 
   /*
   * 更新教師資料
   * @route PATCH - /api/v1/teacher/profile
   */
-  async updateTeacherData(req, res, next) {
+  updateTeacherData: wrapAsync(async (req, res, next) => {
     try {
         const userId = req.user.id
         const {name, nickname, phone, birthday, sex, address, bank_name, bank_account, slogan, description, specialization} = req.body
@@ -103,13 +104,13 @@ const teacherController = {
     } catch (error) {
       next(error)
     }
-  },
+  }),
 
   /*
   * 取得精選教師
   * @route GET - /api/v1/teacher/featured
   */
-  async getTeacherFeatured(req, res, next){
+  getTeacherFeatured: (async (req, res, next) => {
     const coursesRepo = dataSource.getRepository('courses')
 
     //內層： 先選出教師的最新課程，再把結果包成子查詢
@@ -149,13 +150,13 @@ const teacherController = {
     .getRawMany()
 
     return sendResponse(res, 200, true, '取得資料成功', result)
-  },
+  }),
 
   /*
   * 取得單一精選教師資料
   * @route GET - /api/v1/teachers/:teacher-id
   */
-  async getSingleFeaturedTeacherData(req, res, next){
+  getSingleFeaturedTeacherData: wrapAsync(async (req, res, next) => {
     const {teacherId} = req.params
 
     // 取得課程資料, 不用 relations: ['teacher']，拆開請求比較好分類
@@ -214,7 +215,7 @@ const teacherController = {
           },
       course: findCourseResult
     })
-  }
+  })
 }
 
 module.exports = teacherController

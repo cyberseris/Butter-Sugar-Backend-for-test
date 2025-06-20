@@ -17,19 +17,19 @@ const courseController = {
    * 取得所有課程類別
    * @route GET /api/v1/course/category
    */
-  getCourseCategory: async (req, res, next) => {
+  getCourseCategory: wrapAsync(async (req, res, next) => {
     const courseCategoryRepo = dataSource.getRepository('course_categories')
     const categories = await courseCategoryRepo.find({
       select: ['id','name']
     })
     return sendResponse(res, 200, true, '取得課程類別成功', { categories })
-  },
+  }),
 
   /*
    * 取得所有的課程 不分類別
    * @route GET /api/v1/course/list
    */
-  getCourseList: async (req, res, next) => {
+  getCourseList: wrapAsync(async (req, res, next) => {
     const courseRepo = dataSource.getRepository('courses')
     const courses = await courseRepo.find({ relations: ['handouts', 'category'] })
     if (!courses || courses.length === 0) {
@@ -47,13 +47,13 @@ const courseController = {
     })
 
     return sendResponse(res, 200, true, '取得課程列表成功', { courses: result })
-  },
+  }),
 
   /*
    * 取得單一課程
    * @route GET /api/v1/course/:courseId
    */
-  getCourse: async (req, res, next) => {
+  getCourse: wrapAsync(async (req, res, next) => {
     const courseId = req.params.courseId
     if (!courseId) {
       return next(appError(400, '請提供課程 ID'))
@@ -67,7 +67,7 @@ const courseController = {
     }
 
     return sendResponse(res, 200, true, '取得課程成功', { course })
-  },
+  }),
 
   /*
    * 新增課程標題
@@ -288,7 +288,7 @@ const courseController = {
    * 儲存課程資訊
    * @route POST /api/v1/course/:courseId/save
    */
-  saveCourse: async (req, res, next) => {
+  saveCourse: wrapAsync(async (req, res, next) => {
     const { courseId } = req.params
     const { suitable_for, course_goal, course_description, course_banner_description } =
       req.validatedData
@@ -321,13 +321,13 @@ const courseController = {
     await courseRepo.save(course)
 
     return sendResponse(res, 200, true, '課程資訊儲存成功', { course })
-  },
+  }),
 
   /*
    * 取得課程教材列表
    * @route GET /api/v1/course/course-id/upload/course-handouts
    */
-  getCourseHandOuts: async (req, res, next) => {
+  getCourseHandOuts: wrapAsync(async (req, res, next) => {
     const courseId = req.params.courseId
     if (!courseId) {
       return next(appError(400, '請提供課程 ID'))
@@ -337,13 +337,13 @@ const courseController = {
     const handouts = await courseHandoutRepo.find({ where: { course_id: courseId } })
 
     return sendResponse(res, 200, true, '取得教材列表成功', { handouts })
-  },
+  }),
 
   /*
    * 新增課程價格 New
    * @route POST /api/v1/course/:courseId/price
    */
-  createCoursePrice: async (req, res, next) => {
+  createCoursePrice: wrapAsync(async (req, res, next) => {
     const { courseId } = req.params
     const { origin_price } =  req.body 
 
@@ -362,14 +362,14 @@ const courseController = {
     }else{
       return next(appError(400, '課程價格新增失敗'))
     }
-  },
+  }),
 
 
   /*
   * 更新課程狀態
   * @route POST /api/v1/course/:courseId/price
   */
-  updateCourseStatus: async (req, res, next) => {
+  updateCourseStatus: wrapAsync(async (req, res, next) => {
     const { courseId } = req.params
     const { course_status } =  req.body 
 
@@ -388,13 +388,13 @@ const courseController = {
     }else{
       return next(appError(400, '課程狀態更新失敗'))
     }
-  },
+  }),
 
   /*
   * 新增課程評價
   * @route POST /api/v1/course/:courseId/ratings
   */
-  postRatings: async (req, res, next) => {
+  postRatings: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
     const course_id = req.params.courseId
     const { rating_score, review_text } = req.body
@@ -426,13 +426,13 @@ const courseController = {
     updateTeacherRating(course_id)
 
     return sendResponse(res, 200, true, '新增評價成功', result)
-  },
+  }),
 
   /*
   * 修改特定課程評價
   * @route PATCH /api/v1/course/:courseId/ratings
   */
-  patchRatings: async (req, res, next) => {
+  patchRatings: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
     const course_id = req.params.courseId
     const { rating_score, review_text } = req.body
@@ -467,13 +467,13 @@ const courseController = {
     }else{
       return next(appError(400, '更新評價失敗'))
     }
-  },
+  }),
 
   /*
   * 取得首頁熱門課程資料
   * @route GET /api/v1/course/popular
   */
-  getPopularCourses: async (req, res, next) => {
+  getPopularCourses: wrapAsync(async (req, res, next) => {
     const ratingsRepo = dataSource.getRepository('ratings')
     const result = await ratingsRepo.createQueryBuilder('rating')
     .select(['rating.course_id AS course_id',
@@ -493,23 +493,23 @@ const courseController = {
     .getRawMany();
     
     return sendResponse(res, 200, true, '取得資料成功', result)
-  },
+  }),
 
   /*
   * 取得所有課程評價
   * @route GET /api/v1/course/ratings
   */
-  getRatings: async (req, res, next) => {
+  getRatings: wrapAsync(async (req, res, next) => {
     const ratingsRepo = dataSource.getRepository('ratings')
     const findRatings = await ratingsRepo.find()
     return sendResponse(res, 200, true, '成功取得資料', findRatings)
-  },
+  }),
 
   /*
   * 提出課程問題
   * @route POST /api/v1/course/:courseId/questions
   */
-  postQuestions: async (req, res, next) => {
+  postQuestions: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
     const course_id = req.params.courseId
     const { question_text } = req.body
@@ -538,13 +538,13 @@ const courseController = {
     const result = await questionRepo.save(newQuestion)
 
     return sendResponse(res, 200, true, '新增問題成功', result)
-  },
+  }),
 
   /*
   * 提出課程回答
   * @route POST /api/v1/course/:courseId/answers
   */
-  postAnswers: async (req, res, next) => {
+  postAnswers: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
     const course_id = req.params.courseId
     const { question_id, answer_text } = req.body
@@ -574,13 +574,13 @@ const courseController = {
     const result = await answerRepo.save(newAnswer)
 
     return sendResponse(res, 200, true, '新增回答成功', result)
-  },
+  }),
 
   /*
   * 取得課程問題列表 
   * @route GET /api/v1/course/:courseId/questions
   */
-  getQuestions: async (req, res, next) => {
+  getQuestions: wrapAsync(async (req, res, next) => {
     const course_id = req.params.courseId
 
     const questionRepo = dataSource.getRepository('question')
@@ -621,13 +621,13 @@ const courseController = {
     } 
 
     return sendResponse(res, 200, true, '取得課程問題列表', findQuestion)
-  },
+  }),
 
   /*
   * 新增課程章節
   * @route POST - /api/v1/course/:courseId/course-section 
   */
-  postCourseSection: async (req, res, next) => {
+  postCourseSection: wrapAsync(async (req, res, next) => {
     const course_id = req.params.courseId
     const { main_section_title } = req.body
 
@@ -654,27 +654,27 @@ const courseController = {
     const result = await courseSectionRepo.save(newCourseSection)
 
     return sendResponse(res, 200, true, '新增章節成功', result)
-  },
+  }),
 
   /*
   * 取得課程章節
   * @route GET - /api/v1/course/:courseId/course-section 
   */
-  getCourseSection: async (req, res, next) => {
+  getCourseSection: wrapAsync(async (req, res, next) => {
     const course_id = req.params.courseId
     
     const courseSectionRepo = dataSource.getRepository('course_sections')
     const findCourseSection = await courseSectionRepo.find({ where:{course_id: course_id} })
 
     return sendResponse(res, 200, true, '取得課程章節成功', findCourseSection)
-  },
+  }),
 
   
   /*
   * 收藏課程
   * @route POST /favorites/:courseId
   */
-  postFavoriteCourse: async (req, res, next) => {
+  postFavoriteCourse: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
     const { course_id } = req.body
 
@@ -752,13 +752,13 @@ const courseController = {
     })
 
     return sendResponse(res, 200, true, '成功收藏課程', findFavoriteResult)
-  },
+  }),
 
   /*
   * 取得收藏課程
   * @route GET /favorites
   */
-  getFavoriteCourse: async (req, res, next) => {
+  getFavoriteCourse: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
 
     const favoriteRepo = dataSource.getRepository('favorite_course')
@@ -819,13 +819,13 @@ const courseController = {
     })
 
     return sendResponse(res, 200, true, '成功取得收藏課程', findFavoriteResult)
-  },
+  }),
 
   /*
   * 取消收藏課程
   * @route GET /favorites
   */
-  deleteFavoriteCourse: async (req, res, next) => {
+  deleteFavoriteCourse: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
     const favorite_id = req.params.favoriteId
   
@@ -894,7 +894,7 @@ const courseController = {
 
 
     return sendResponse(res, 200, true, '成功刪除收藏課程', findFavoriteResult)
-  },
+  }),
 
   /*
   * 取得我的課程列表
@@ -909,7 +909,7 @@ const courseController = {
     return sendResponse(res, 200, true, '成功取得我的課程', findStudentCourse)
   }, */
 
-  getMyCourse: async (req, res, next) => {
+  getMyCourse: wrapAsync(async (req, res, next) => {
     const user_id = req.user.id
 
     //取得我的課程表資料
@@ -961,40 +961,40 @@ const courseController = {
     }))
 
     return sendResponse(res, 200, true, '成功取得我的課程', result)
-  },
+  }),
 
     /*
   * 修改課程章節
   * @route PATCH - /api/v1/course/course-section/:courseSectionId
   */
-    patchCourseSection: async (req, res, next) => {
-      const section_id = req.params.courseSectionId
-      const { main_section_title } = req.body
+  patchCourseSection: wrapAsync(async (req, res, next) => {
+    const section_id = req.params.courseSectionId
+    const { main_section_title } = req.body
 
-      const courseSectionRepo = dataSource.getRepository('course_sections')
+    const courseSectionRepo = dataSource.getRepository('course_sections')
+    const findCourseSection = await courseSectionRepo.findOne({where:{id: section_id}})
+
+    if(!findCourseSection){
+      return next(appError(404, '章節不存在'))
+    }
+
+    const updateCourseSection = await courseSectionRepo.update(
+      {id: section_id},
+      {main_section_title: main_section_title})
+
+    if(updateCourseSection.affected === 1){
       const findCourseSection = await courseSectionRepo.findOne({where:{id: section_id}})
-  
-      if(!findCourseSection){
-        return next(appError(404, '章節不存在'))
-      }
-
-      const updateCourseSection = await courseSectionRepo.update(
-        {id: section_id},
-        {main_section_title: main_section_title})
-
-      if(updateCourseSection.affected === 1){
-        const findCourseSection = await courseSectionRepo.findOne({where:{id: section_id}})
-        return sendResponse(res, 200, true, '更新課程章節成功', findCourseSection)
-      }else{
-        return next(appError(404, '更新課程章節失敗'))
-      }
-    },
+      return sendResponse(res, 200, true, '更新課程章節成功', findCourseSection)
+    }else{
+      return next(appError(404, '更新課程章節失敗'))
+    }
+  }),
 
   /*
   * 刪除課程章節
   * @route DELETE - /api/v1/course/course-section/:courseSectionId
   */
-  deleteCourseSection: async (req, res, next) => {
+  deleteCourseSection: wrapAsync(async (req, res, next) => {
     const section_id = req.params.courseSectionId
     
     const courseSectionRepo = dataSource.getRepository('course_sections')
@@ -1012,7 +1012,7 @@ const courseController = {
     }else{
       return next(appError(404, '課程章節刪除失敗'))
     }
-  },
+  }),
     
   // 取得首頁熱門課程資料
   // async getPopularCourses(req, res, next) {
