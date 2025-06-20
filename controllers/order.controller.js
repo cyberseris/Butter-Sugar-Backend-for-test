@@ -27,7 +27,7 @@ const orderController = {
 
         const orderResult = {
             ...result,
-            course_count: result.course_name.length
+            course_count: course_name.length
         }
         return sendResponse(res, 200, true, '成功取得訂單', orderResult)
     },
