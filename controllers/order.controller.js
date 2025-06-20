@@ -57,7 +57,7 @@ const orderController = {
         const courseResult = await orderItemRepo.createQueryBuilder('orderItem')
         .select([
             'course.id AS course_id',
-            'course.course_small_imageurl AS course_small_imageurl',
+            'course.course_small_imageUrl AS course_small_imageUrl',
             'course.course_name AS course_name',
             'course.price AS course_price',
         ])
