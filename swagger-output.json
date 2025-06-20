@@ -5,10 +5,10 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "buttersugar-backend.zeabur.app",
+  "host": "buttersugar-backend.zeabur.app", 
   "basePath": "/",
   "schemes": [
-    "https"
+    "http", "https"
   ],
   "securityDefinitions": {
     "BearerAuth": {
@@ -77,6 +77,66 @@
         }
       }
     },
+    "/api/v1/course/favorites/list": {
+        "get": {
+          "tags": ["User"],
+          "summary": "取得收藏課程列表",
+          "description": "取得目前使用者所有收藏的課程",
+          "responses": {
+            "200": {
+              "description": "成功取得收藏課程列表"
+            }
+          }
+        }
+      },
+      "/api/v1/course/favorites": {
+        "post": {
+          "tags": ["User"],
+          "summary": "新增收藏課程",
+          "description": "將指定課程加入收藏",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "course_id": { "type": "string", "example": "97ff5cbd-7cbd-4e47-ab8b-b5da0e0be89f" }
+                },
+                "required": ["course_id"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "成功加入收藏"
+            }
+          }
+        }
+      },
+      "/api/v1/course/favorites/{favoriteId}": {
+        "delete": {
+          "tags": ["User"],
+          "summary": "刪除收藏課程",
+          "description": "依 favoriteId 刪除指定收藏",
+          "parameters": [
+            {
+              "name": "favoriteId",
+              "in": "path",
+              "type": "string",
+              "required": true,
+              "description": "收藏記錄ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "成功刪除收藏課程"
+            }
+          }
+        }
+      }
+    ,
     "/api/v1/users/orders": {
       "get": {
         "tags": ["User"],

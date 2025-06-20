@@ -6,7 +6,7 @@ const doc = {
     description: 'Description'
   },
   host: 'buttersugar-backend.zeabur.app',  //host: 'buttersugar-backend.zeabur.app',
-  schemes: ['https'],
+  schemes: ['http','https'],
   securityDefinitions: {
     BearerAuth: {
       type: 'apiKey',

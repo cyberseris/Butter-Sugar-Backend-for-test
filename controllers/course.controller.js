@@ -676,7 +676,7 @@ const courseController = {
   */
   postFavoriteCourse: async (req, res, next) => {
     const user_id = req.user.id
-    const course_id = req.params.courseId
+    const { course_id } = req.body
 
     const courseRepo = dataSource.getRepository('courses')
     const findCourse = await courseRepo.findOne({ where:{id: course_id} })
@@ -695,28 +695,76 @@ const courseController = {
     const newFavorite = favoriteRepo.create({user_id: user_id,course_id:course_id})
     const favoriteResult = await favoriteRepo.save(newFavorite)
 
-    return sendResponse(res, 200, true, '成功收藏課程', favoriteResult)
+    const findFavorites = await favoriteRepo.createQueryBuilder('favorite_course')
+    .select(['favorite_course.id AS id',
+              'user.name AS teacher_name',
+              'course.id AS course_id',
+              'course.course_name AS course_name',
+              'course.course_banner_imageUrl AS course_banner_imageUrl',
+              'course.course_banner_description AS course_banner_description',
+              'course.course_small_imageUrl AS course_small_imageUrl',
+              'course.course_description AS course_description',
+              'course.course_description_imageUrl AS course_description_imageUrl',
+              'course.course_hours AS course_hours',
+              'course.origin_price AS origin_price',
+              'course.sell_price AS sell_price',
+              'course.total_users AS total_users',
+              'course.trailer_url AS trailer_url',
+              'course.suitable_for AS suitable_for',
+              'course.course_goal AS course_goal'
+            ])
+    .leftJoin('favorite_course.course', 'course')
+    .leftJoin('course.teacher', 'teacher')
+    .leftJoin('teacher.user', 'user')
+    .where('favorite_course.user_id = :user_id', {user_id:user_id})
+    .getRawMany()
+
+    return sendResponse(res, 200, true, '成功收藏課程', findFavorites)
   },
 
   /*
   * 取得收藏課程
   * @route GET /favorites
   */
-    getFavoriteCourse: async (req, res, next) => {
-      const user_id = req.user.id
-      console.log("==============getFavoriteCourse==============")
-      const favoriteRepo = dataSource.getRepository('favorite_course')
-      const findFavorite = await favoriteRepo.find({
-        where:{user_id: user_id},
-        relations: ['course']
-      })
+  getFavoriteCourse: async (req, res, next) => {
+    const user_id = req.user.id
 
-      console.log("==============getFavoriteCourse findFavorite==============")
-      console.log(findFavorite)
-      console.log("==============getFavoriteCourse findFavorite==============")
-  
-      return sendResponse(res, 200, true, '成功取得收藏課程', findFavorite)
-    },
+    const favoriteRepo = dataSource.getRepository('favorite_course')
+    const findFavorite = await favoriteRepo.createQueryBuilder('favorite_course')
+    .select(['favorite_course.id AS id',
+              'user.name AS teacher_name',
+              'course.id AS course_id',
+              'course.course_name AS course_name',
+              'course.course_banner_imageUrl AS course_banner_imageUrl',
+              'course.course_banner_description AS course_banner_description',
+              'course.course_small_imageUrl AS course_small_imageUrl',
+              'course.course_description AS course_description',
+              'course.course_description_imageUrl AS course_description_imageUrl',
+              'course.course_hours AS course_hours',
+              'course.origin_price AS origin_price',
+              'course.sell_price AS sell_price',
+              'course.total_users AS total_users',
+              'course.trailer_url AS trailer_url',
+              'course.suitable_for AS suitable_for',
+              'course.course_goal AS course_goal'
+            ])
+    .leftJoin('favorite_course.course', 'course')
+    .leftJoin('course.teacher', 'teacher')
+    .leftJoin('teacher.user', 'user')
+    .where('favorite_course.user_id = :user_id', {user_id:user_id})
+    .getRawMany()
+
+/*     const findFavorite = await favoriteRepo.find({
+      where:{user_id: user_id},
+      relations: ['course']
+    }) */
+
+    console.log("==============getFavoriteCourse findFavorite==============")
+    console.log(findFavorite)
+    console.log("==============getFavoriteCourse findFavorite==============")
+
+    return sendResponse(res, 200, true, '成功取得收藏課程', findFavorite)
+  },
 
   /*
   * 取消收藏課程
@@ -724,18 +772,38 @@ const courseController = {
   */
   deleteFavoriteCourse: async (req, res, next) => {
     const user_id = req.user.id
+    const favorite_id = req.params.favoriteId
   
     const favoriteRepo = dataSource.getRepository('favorite_course')    
-    const deleteResult = await favoriteRepo.delete({where:{user_id: user_id, course_id:course_id}})
+    const deleteResult = await favoriteRepo.delete({id:favorite_id})
 
     if(!deleteResult.affected){
       return next(appError(404, '課程不存在'))
     }
 
-    const findFavorite = await favoriteRepo.find({
-      where:{user_id: user_id, course_id:course_id},
-      relations: ['course']
-    })
+    const findFavorite = await favoriteRepo.createQueryBuilder('favorite_course')
+    .select(['favorite_course.id AS id',
+              'user.name AS teacher_name',
+              'course.id AS course_id',
+              'course.course_name AS course_name',
+              'course.course_banner_imageUrl AS course_banner_imageUrl',
+              'course.course_banner_description AS course_banner_description',
+              'course.course_small_imageUrl AS course_small_imageUrl',
+              'course.course_description AS course_description',
+              'course.course_description_imageUrl AS course_description_imageUrl',
+              'course.course_hours AS course_hours',
+              'course.origin_price AS origin_price',
+              'course.sell_price AS sell_price',
+              'course.total_users AS total_users',
+              'course.trailer_url AS trailer_url',
+              'course.suitable_for AS suitable_for',
+              'course.course_goal AS course_goal'
+            ])
+    .leftJoin('favorite_course.course', 'course')
+    .leftJoin('course.teacher', 'teacher')
+    .leftJoin('teacher.user', 'user')
+    .where('favorite_course.user_id = :user_id', {user_id:user_id})
+    .getRawMany()
 
     return sendResponse(res, 200, true, '成功刪除收藏課程', findFavorite)
   },
