@@ -59,7 +59,8 @@ const orderController = {
             'course.id AS course_id',
             'course.course_small_imageUrl AS course_small_imageUrl',
             'course.course_name AS course_name',
-            'course.price AS course_price',
+            'course.origin_price AS origin_price',
+            'course.sell_price AS sell_price'
         ])
         .leftJoin('orderItem.order', 'order')
         .leftJoin('orderItem.courses', 'course')
