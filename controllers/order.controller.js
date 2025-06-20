@@ -76,13 +76,16 @@ const orderController = {
         console.log("orderResult.pay_rtn_msg: ", orderResult.pay_rtn_msg)
         console.log("==============getOrder orderResult=============")
 
-        const parsedResult = orderResult.map(row => ({
-            ...row,
-            payway: JSON.parse(row.pay_rtn_msg).PaymentType, 
-            order_items: courseResult
-            /* ,
-            pay_rtn_msg: row.pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null */
-        }))
+        const parsedResult = orderResult.map(row => {
+            const { pay_rtn_msg, ...rest } = row
+            return {
+                ...rest,
+                payway: JSON.parse(row.pay_rtn_msg).PaymentType, 
+                order_items: courseResult
+                /* ,
+                pay_rtn_msg: row.pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null */
+            }
+        })
 
         return sendResponse(res, 200, true, '成功取得訂單', parsedResult)
     }
