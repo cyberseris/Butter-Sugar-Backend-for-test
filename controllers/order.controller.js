@@ -39,7 +39,6 @@ const orderController = {
         const orderItemRepo = dataSource.getRepository('order_item')
         const orderResult = await orderItemRepo.createQueryBuilder('orderItem')
         .select([
-            'order.id AS order_id',
             'order.order_number AS order_number', 
             'array_agg(course.course_name) AS course_name', 
             'order.final_amount AS final_amount', 
