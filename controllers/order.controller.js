@@ -74,7 +74,7 @@ const orderController = {
         console.log("==============getOrder orderResult=============")
         console.log("orderResult: ", orderResult)
         console.log("orderResult.pay_rtn_msg: ", orderResult.pay_rtn_msg)
-        onsole.log("==============getOrder orderResult=============")
+        console.log("==============getOrder orderResult=============")
 
         const parsedResult = orderResult.map(row => ({
             ...row,
