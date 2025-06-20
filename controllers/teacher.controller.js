@@ -173,9 +173,13 @@ const teacherController = {
       relations:['user']
     })
 
-    console.log("==============findTeacher=============")
-    console.log(findTeacher)
-    console.log("==============findTeacher=============")
+    const ratingRepo = dataSource.getRepository('ratings')
+    const ratingCount = ratingRepo.createQueryBuilder('rating')
+    .select('COUNT(rating.id)', 'rating_users')
+    .leftJoin('rating.courses', 'course')
+    .leftJoin('course.teacher', 'teacher')
+    .where('teacher.id = :teacher_id', {teacher_id:teacherId})
+    .getRawOne()
 
     return sendResponse(res, 200, true, '取得資料成功', {
       teacher: {
@@ -183,7 +187,8 @@ const teacherController = {
             user_id : findTeacher.user.id,
             name: findTeacher.user.name,
             profile_image_url:findTeacher.user.profile_image_url,
-            rating_score: findTeacher.rating_score, 	
+            rating_score: findTeacher.rating_score, 
+            rating_users: ratingCount.rating_users,	
             slogan: findTeacher.slogan,
             description: findTeacher.description,
             specialization: findTeacher.specialization    
