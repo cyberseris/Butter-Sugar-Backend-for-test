@@ -8,7 +8,7 @@
   "host": "buttersugar-backend.zeabur.app", 
   "basePath": "/",
   "schemes": [
-    "http", "https"
+    "https"
   ],
   "securityDefinitions": {
     "BearerAuth": {
