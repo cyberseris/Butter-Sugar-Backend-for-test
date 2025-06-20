@@ -37,13 +37,15 @@ const orderController = {
         const order_number = req.params.orderNumber
         
         const orderItemRepo = dataSource.getRepository('order_item')
-        const result = await orderItemRepo.createQueryBuilder('orderItem')
+        const orderResult = await orderItemRepo.createQueryBuilder('orderItem')
         .select([
+            'order.id AS order_id',
             'order.order_number AS order_number', 
             'array_agg(course.course_name) AS course_name', 
             'order.final_amount AS final_amount', 
             'order.pay_rtn_msg AS pay_rtn_msg', 
-            'order.created_at AS created_at'])
+            'order.created_at AS created_at'
+        ])
         .leftJoin('orderItem.order', 'order')
         .leftJoin('orderItem.courses', 'course')
         .where('order.user_id = :user_id AND order.payment_status = :status AND order.order_number = :order_number', {user_id: user_id, status: 'paid', order_number: order_number})
@@ -53,9 +55,28 @@ const orderController = {
         .addGroupBy('order.created_at')
         .getRawMany()
 
-        const parsedResult = result.map(row => ({
+        const courseResult = await orderItemRepo.createQueryBuilder('orderItem')
+        .select([
+            'course.id AS course_id',
+            'course.course_small_imageurl AS course_small_imageurl',
+            'course.course_name AS course_name',
+            'course.price AS course_price',
+        ])
+        .leftJoin('orderItem.order', 'order')
+        .leftJoin('orderItem.courses', 'course')
+        .where('order.user_id = :user_id AND order.payment_status = :status AND order.order_number = :order_number', {user_id: user_id, status: 'paid', order_number: order_number})
+        .getRawMany()
+
+        console.log("==============getOrder courseResult=============")
+        console.log("courseResult: ", courseResult)
+        console.log("==============getOrder courseResult=============")
+
+        const parsedResult = orderResult.map(row => ({
             ...row,
-            pay_rtn_msg: row.pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null
+            payway: pay_rtn_msg.PaymentType, 
+            order_items: courseResult
+            /* ,
+            pay_rtn_msg: row.pay_rtn_msg?JSON.parse(row.pay_rtn_msg):null */
         }))
 
         return sendResponse(res, 200, true, '成功取得訂單', parsedResult)
