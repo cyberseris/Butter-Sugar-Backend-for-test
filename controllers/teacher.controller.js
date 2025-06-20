@@ -161,7 +161,7 @@ const teacherController = {
     // 取得課程資料, 不用 relations: ['teacher']，拆開請求比較好分類
     const coursesRepo = dataSource.getRepository('courses')
     const findCourses = await coursesRepo.find({
-      select: ['id', 'course_banner_imageUrl', 'course_name'],
+      select: ['id', 'course_banner_imageUrl', 'course_name', 'origin_price', 'sell_price', 'total_users'],
       where: { teacher_id:teacherId }
     })
 
@@ -174,12 +174,31 @@ const teacherController = {
     })
 
     const ratingRepo = dataSource.getRepository('ratings')
-    const ratingCount = ratingRepo.createQueryBuilder('rating')
+    const ratingCount = await ratingRepo.createQueryBuilder('rating')
     .select('COUNT(rating.id)', 'rating_users')
     .leftJoin('rating.courses', 'course')
     .leftJoin('course.teacher', 'teacher')
     .where('teacher.id = :teacher_id', {teacher_id:teacherId})
     .getRawOne()
+
+    //每門課的平均評價分數
+    const avgRatings = await ratingRepo.createQueryBuilder('rating')
+    .select(['rating.course_id AS course_id', 
+            'ROUND(AVG(rating.rating_score)::numeric, 2) AS avg_rating_score',
+            'COUNT(rating.id) AS course_rating_users',])
+    .groupBy('rating.course_id')
+    .getRawMany()
+
+
+    //轉成物件
+    const avgRatingMap = Object.fromEntries(avgRatings.map(r => [r.course_id, {avg_rating_score: r.avg_rating_score, course_rating_users: r.course_rating_users}]))
+    
+    const findCourseResult = findCourses.map(course => {
+      return {
+        ...course,
+        course_ratings: avgRatingMap[course.id] || ''
+      }
+    })
 
     return sendResponse(res, 200, true, '取得資料成功', {
       teacher: {
@@ -193,7 +212,7 @@ const teacherController = {
             description: findTeacher.description,
             specialization: findTeacher.specialization    
           },
-      course: findCourses
+      course: findCourseResult
     })
   }
 }
