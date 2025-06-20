@@ -25,10 +25,16 @@ const orderController = {
         .addGroupBy('order.created_at')
         .getRawMany()
 
-        const orderResult = {
-            ...result,
-            course_count: course_name.length
-        }
+        console.log("============getOrderList===========")
+        console.log(result)
+        console.log("============getOrderList===========")
+        const orderResult = result.map(order => {
+            return {
+                ...order,
+                course_count: order.course_name ? order.course_name.length : 0
+            }
+        })
+        
         return sendResponse(res, 200, true, '成功取得訂單', orderResult)
     },
 
