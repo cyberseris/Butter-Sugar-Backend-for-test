@@ -398,13 +398,13 @@ const cartController = {
         }
 
               // 傳回 JSON 給前端，token= 測試用(暫不考慮安全性)
-/*         return res.redirect(
-            `${process.env.FRONTEND_URL}/index.html?renderData=${encodeURIComponent(JSON.stringify(renderData))}`
-        ) */
-
         return res.redirect(
-            `/index.html?renderData=${encodeURIComponent(JSON.stringify(renderData))}`
+            `${process.env.FRONTEND_URL}/home/cart-flow/order-success?renderData=${encodeURIComponent(JSON.stringify(renderData))}`
         )
+
+/*         return res.redirect(
+            `/index.html?renderData=${encodeURIComponent(JSON.stringify(renderData))}`
+        ) */
         // 二選一，傳送表單或是 json 檔
         const html = renderOrderHtml(renderData)
         res.send(html)
