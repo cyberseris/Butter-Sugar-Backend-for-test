@@ -46,11 +46,9 @@
                 let redirect = document.getElementById('wrapper')
                 redirect.innerHTML = res.data
                 
-                console.log(res)
-
-/*                 setTimeout(() => {
+                setTimeout(() => {
                         document.forms[0].submit();
-                    }, 0); */
+                    }, 0);
             }catch(err){
                 console.error("結帳失敗：", err.response?.data || err.message)
             }
