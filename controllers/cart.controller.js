@@ -75,7 +75,10 @@ const cartController = {
                 where: {user_id:user_id}
             })
 
-            const courseIds = findCourseIds.map(item => item.id).join(',')
+            const courseIds = findCourseIds.map(item => item.id)
+            console.log("============UserId=============")
+            console.log("user_id: ", user_id)
+            console.log("============UserId=============")
             console.log("============CourseId=============")
             console.log("course_id: ", course_id)
             console.log("============CourseId=============")
