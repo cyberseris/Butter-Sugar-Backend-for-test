@@ -69,24 +69,18 @@ const cartController = {
                 return next(appError(404, "課程不存在或未上架"))
             }
 
+            //取得我的課程資訊
             const studentCourseRepo = dataSource.getRepository('student_course')
             const findCourseIds = await studentCourseRepo.find({
                 select:['course_id'],
                 where: {user_id:user_id}
             })
 
-            const courseIds = findCourseIds.map(item => item.course_id)
-            console.log("============UserId=============")
-            console.log("user_id: ", user_id)
-            console.log("============UserId=============")
-            console.log("============CourseId=============")
-            console.log("course_id: ", course_id)
-            console.log("============CourseId=============")
-            console.log("============findCourseIds=============")
-            console.log("courseIds: ", courseIds)
-            console.log("============findCourseIds=============")
+            //取出課程 id
+            const course_Ids = findCourseIds.map(item => item.course_id)
 
-            if(courseIds.includes(course_id)){
+            //判斷是否有買過此課程
+            if(course_Ids.includes(course_id)){
                 return next(appError(400, "您已購買過此課程"))
             }
 
@@ -147,6 +141,16 @@ const cartController = {
         const user_id = req.user.id;
         const { course_ids } = req.body;
 
+        //取得我的課程資訊
+        const studentCourseRepo = dataSource.getRepository('student_course')
+        const findCourseIds = await studentCourseRepo.find({
+            select:['course_id'],
+            where: {user_id:user_id}
+        })
+
+        //取出課程 id
+        const course_Ids = findCourseIds.map(item => item.course_id)
+
         await dataSource.transaction(async (manager) => {
             const cartsRepo = manager.getRepository('carts');
             const cartItemsRepo = manager.getRepository('cart_items');
@@ -190,12 +194,20 @@ const cartController = {
                     return next(appError(404, "課程不存在或已下架"))
                 }
 
-                //只取出 course 的 id
-                const isValidIds = validCourses.map(item => item.id)
-                const isInvalids = mergeItemIds.filter(id => !isValidIds.includes(id))
+                //先判斷是否存在資料庫且為上架狀態
+                let isValidIds = validCourses.map(item => item.id)
+                //不存在購物車或非上架狀態的課程
+                let isInvalids = mergeItemIds.filter(id => !isValidIds.includes(id))
                 
-                //只取出未存在原購物車的 id
-                const insertIds = isValidIds.filter(id => !cartItemIds.includes(id))
+                //只取出未存在原購物車的 id，加入購物車
+                let insertIds = isValidIds.filter(id => !cartItemIds.includes(id))
+                
+
+                //判斷是否有買過此課程
+                // 已購買
+                let myCourseIds = insertIds.filter(id => course_Ids.includes(id))
+                // 未購買
+                insertIds = insertIds.filter(id => !course_Ids.includes(id))
 
                 //批次建立購物車物件 & 新增
                 let result
@@ -207,6 +219,8 @@ const cartController = {
                     result = await cartItemsRepo.save(newItems)
                 }
 
+                isInvalids = Array.from(new Set([...(isInvalids || []), ...myCourseIds]))
+
                 //回傳購物車課程數量跟總金額
                 const summaryItems = await summaryCartItems(cartItemsRepo, cart_id) || { item_count: 0, total_price: 0 }
 
@@ -214,8 +228,8 @@ const cartController = {
                     item_count: summaryItems?.item_count ?? 0, //只要結果是 0 或 "" 就回傳 0, 跟 ||不一樣
                     total_price: summaryItems?.total_price ?? 0,
                     errors: isInvalids.length > 0 ? {
-                        reason: "課程不存在或已下架",
-                        course_ids: isInvalids
+                        reason: "課程不存在、課程已下架或課程已購買",
+                        isInvalids: isInvalids
                     }: null
                 })   
 
