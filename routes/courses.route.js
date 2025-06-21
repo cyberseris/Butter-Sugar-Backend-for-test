@@ -14,6 +14,9 @@ router.get('/list', courseController.getCourseList)
 // 取得我的課程列表
 router.get('/my-courses', ...handleMiddleware([isAuth], courseController.getMyCourse))
 
+// 取得已購買的課程列表
+router.get('/purchased', ...handleMiddleware([isAuth], courseController.getPurchased))
+
 //取得所有類別
 router.get('/course-category', courseController.getCourseCategory)
 

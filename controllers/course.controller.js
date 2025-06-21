@@ -982,6 +982,26 @@ const courseController = {
     return sendResponse(res, 200, true, '成功取得我的課程', result)
   }),
 
+  /*
+  * 取得我的課程列表
+  * @route GET - /api/v1/course/purchased 
+  */
+  getPurchased: wrapAsync(async (req, res, next) => {
+    const user_id = req.user.id
+
+    //取得已購買的課程列表
+    const studentCourseRepo = dataSource.getRepository('student_course')
+    const findStudentCourse = await studentCourseRepo.createQueryBuilder('student_course')
+    .select(['course.id AS course_id', 
+      'course.course_name AS course_name'])
+    .leftJoin('student_course.course', 'course')
+    .where('student_course.user_id=:user_id', {user_id: user_id})
+    .getRawMany()
+
+
+    return sendResponse(res, 200, true, '成功取得我的課程', findStudentCourse)
+  }),
+
     /*
   * 修改課程章節
   * @route PATCH - /api/v1/course/course-section/:courseSectionId

@@ -79,7 +79,7 @@
     },
     "/api/v1/course/favorites/list": {
         "get": {
-          "tags": ["User"],
+          "tags": ["Courses"],
           "summary": "取得收藏課程列表",
           "description": "取得目前使用者所有收藏的課程",
           "responses": {
@@ -91,7 +91,7 @@
       },
       "/api/v1/course/favorites": {
         "post": {
-          "tags": ["User"],
+          "tags": ["Courses"],
           "summary": "新增收藏課程",
           "description": "將指定課程加入收藏",
           "parameters": [
@@ -117,7 +117,7 @@
       },
       "/api/v1/course/favorites/{favoriteId}": {
         "delete": {
-          "tags": ["User"],
+          "tags": ["Courses"],
           "summary": "刪除收藏課程",
           "description": "依 favoriteId 刪除指定收藏",
           "parameters": [
@@ -679,6 +679,15 @@
         "summary": "取得我的課程列表",
         "responses": {
           "200": { "description": "成功取得我的課程列表" }
+        }
+      }
+    },
+    "/api/v1/course/purchased": {
+      "get": {
+        "tags": ["Courses"],
+        "summary": "取得已購買的課程列表",
+        "responses": {
+          "200": { "description": "取得已購買的課程列表" }
         }
       }
     },
