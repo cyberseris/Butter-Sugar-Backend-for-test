@@ -69,6 +69,15 @@ const cartController = {
                 return next(appError(404, "課程不存在或未上架"))
             }
 
+            const studentCourseRepo = dataSource.getRepository('student_course')
+            const findCourseIds = await studentCourseRepo.find({
+                select:['course_id']
+            })
+
+            console.log("============findCourseIds=============")
+            console.log("findCourseIds: ", findCourseIds)
+            console.log("============findCourseIds=============")
+
             try {
                 // 查看此使用者是否建立購物車
                 let findCart = await cartsRepo.findOne({
@@ -299,6 +308,11 @@ const cartController = {
             const shaEncrypt = createShaEncrypt(aesEncrypt)
 
             const orderRepo = dataSource.getRepository('order')
+
+            if(summaryItems.total_price - Number(discount_amount)<0){
+                return next(appError(404, '折扣金額有誤'))
+            }
+
             const newOrder = orderRepo.create({
                 user_id: user_id,
                 coupon_id: coupon_id, //escapeHtml.escape(coupon_id)

@@ -26,9 +26,6 @@ const orderController = {
         .addGroupBy('order.created_at')
         .getRawMany()
 
-        console.log("============getOrderList===========")
-        console.log(result)
-        console.log("============getOrderList===========")
         const orderResult = result.map(order => {
             return {
                 ...order,
