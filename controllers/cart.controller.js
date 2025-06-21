@@ -342,7 +342,7 @@ const cartController = {
             console.log("===============alreadyBoughtIds==============")
 
             //判斷是否有買過此課程
-            if(!alreadyBoughtIds){
+            if(alreadyBoughtIds.length){
                 return next(appError(400, `您已購買過這些課程 ${alreadyBoughtIds}`))
             }
             return sendResponse(res, 200, true, '結帳測試')
