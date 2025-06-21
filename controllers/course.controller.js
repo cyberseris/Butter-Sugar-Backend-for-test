@@ -998,8 +998,7 @@ const courseController = {
     .where('student_course.user_id=:user_id', {user_id: user_id})
     .getRawMany()
 
-
-    return sendResponse(res, 200, true, '成功取得我的課程', findStudentCourse)
+    return sendResponse(res, 200, true, '成功取得已購買的課程列表', findStudentCourse)
   }),
 
     /*
