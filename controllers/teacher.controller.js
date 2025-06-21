@@ -144,7 +144,7 @@ const teacherController = {
     .from('('+ sub.getQuery() +')', 't')
     .setParameters(sub.getParameters())  //把內層 QueryBuilder 用到的所有參數，原封不動地複製到外層 QueryBuilder
     .where('t.rn=1') // 取出第一筆
-    .orderBy('t.teacher_rating_score', 'DESC', 'NILLS LAST')
+    .orderBy('t.teacher_rating_score', 'DESC', 'NULLS LAST')
     .addOrderBy('t.created_at', 'DESC')
     .limit(10)
     .getRawMany()
