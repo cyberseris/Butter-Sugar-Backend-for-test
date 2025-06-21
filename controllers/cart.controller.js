@@ -76,9 +76,15 @@ const cartController = {
             })
 
             const courseIds = findCourseIds.map(item => item.id).join(',')
+            console.log("============CourseId=============")
+            console.log("course_id: ", course_id)
+            console.log("============CourseId=============")
+            console.log("============findCourseIds=============")
+            console.log("courseIds: ", courseIds)
+            console.log("============findCourseIds=============")
 
             if(courseIds.includes(course_id)){
-                return next(appError(400, "您已經購買過此課程"))
+                return next(appError(400, "您已購買過此課程"))
             }
 
             try {
