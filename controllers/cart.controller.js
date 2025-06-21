@@ -326,20 +326,8 @@ const cartController = {
             //取出課程 id
             const studentCourseIds = findCourseIds.map(item => item.course_id)
 
-            console.log("===============studentCourseIds==============")
-            console.log("studentCourseIds: ", studentCourseIds)
-            console.log("===============studentCourseIds==============")
-
-            console.log("===============studentCourseIds==============")
-            console.log("course_ids: ", course_ids)
-            console.log("===============studentCourseIds==============")
-
             //判斷課程是否購買
             const alreadyBoughtIds = course_ids.filter( id => studentCourseIds.includes(id))
-
-            console.log("===============alreadyBoughtIds==============")
-            console.log("alreadyBoughtIds: ", alreadyBoughtIds)
-            console.log("===============alreadyBoughtIds==============")
 
             //判斷是否有買過此課程
             if(alreadyBoughtIds.length){
@@ -503,10 +491,6 @@ const cartController = {
         const response = req.body
         const data = createAesDecrypt(response.TradeInfo)
 
-        console.log("==========newebpayNotify data===========")
-        console.log(data)
-        console.log("==========newebpayNotify data===========")
-
         const thisShaEncrypt = createShaEncrypt(response.TradeInfo)
     
         if(!thisShaEncrypt === response.TradeSha){
@@ -514,9 +498,6 @@ const cartController = {
 
             return next(appError(400, '付款失敗'))
         } 
-
-        console.log("==========newebpayNotify data 2===========")
-        console.log('MerchantOrderNo:', data.Result.MerchantOrderNo)
 
         const payment_status =  data.Status==='SUCCESS'?'paid':'failed'
         const orderRepo = dataSource.getRepository('order')
@@ -529,14 +510,8 @@ const cartController = {
             }
         )
         
-        console.log("==========newebpayNotify data 3===========")
-        console.log('MerchantOrderNo2:', data.Result.MerchantOrderNo)
         //取得訂單
         const findOrder = await orderRepo.findOne({where: {order_number: data.Result.MerchantOrderNo}})
-
-        console.log("==========newebpayNotify data 4===========")
-        console.log("findOrder: ", findOrder)
-        console.log("==========newebpayNotify data 4===========")
 
         const user_id = findOrder.user_id
         const order_id = findOrder.id
@@ -545,10 +520,6 @@ const cartController = {
         // 取得訂單詳細項目
         const orderItemRepo = dataSource.getRepository('order_item')
         const orderCourse = await orderItemRepo.find({where:{order_id:order_id}})
-
-        console.log("==========newebpayNotify data 5===========")
-        console.log("orderCourse: ", orderCourse)
-        console.log("==========newebpayNotify data 5===========")
 
         //新增學生課程表課程
         const studentCourseRepo = dataSource.getRepository('student_course')
@@ -563,12 +534,7 @@ const cartController = {
             })
             await studentCourseRepo.save(newStudentCourse)
 
-            console.log("==========newebpayNotify data 6===========")
             findCourse = await courseRepo.findOne({where:{id:course.course_id}})
-
-            console.log("==========newebpayNotify data 7===========")
-            console.log("findCourse: ", findCourse)
-            console.log("==========newebpayNotify data 7===========")
 
             // 新增課程人數
             if(findCourse){
@@ -576,9 +542,6 @@ const cartController = {
                 updateCourse = await courseRepo.update({id:course.course_id},{total_users: total_users})
             }
 
-            console.log("==========newebpayNotify data 8===========")
-            console.log("updateCourse: ", updateCourse)
-            console.log("==========newebpayNotify data 8===========")
         }
 
         return sendResponse(res, 200, true, '結帳成功', data)

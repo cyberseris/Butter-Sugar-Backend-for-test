@@ -75,15 +75,6 @@ const orderController = {
         .where('order.user_id = :user_id AND order.payment_status = :status AND order.order_number = :order_number', {user_id: user_id, status: 'paid', order_number: order_number})
         .getRawMany()
 
-        console.log("==============getOrder courseResult=============")
-        console.log("courseResult: ", courseResult)
-        console.log("==============getOrder courseResult=============")
-
-        console.log("==============getOrder orderResult=============")
-        console.log("orderResult: ", orderResult)
-        console.log("orderResult.pay_rtn_msg: ", orderResult.pay_rtn_msg)
-        console.log("==============getOrder orderResult=============")
-
         const parsedResult = orderResult.map(row => {
             const { pay_rtn_msg, ...rest } = row
             return {
