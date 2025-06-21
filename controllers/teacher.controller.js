@@ -16,7 +16,6 @@ const teacherController = {
       const userId = req.user.id
       const teacherRepo = dataSource.getRepository('teacher')
 
-
       // 確認教師是否存在
       const findTeacher = await teacherRepo.findOne({
         select: [

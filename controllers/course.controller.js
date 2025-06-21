@@ -990,7 +990,7 @@ const courseController = {
   }),
 
   /*
-  * 取得我的課程列表
+  * 取得已購買的課程列表
   * @route GET - /api/v1/course/purchased 
   */
   getPurchased: wrapAsync(async (req, res, next) => {

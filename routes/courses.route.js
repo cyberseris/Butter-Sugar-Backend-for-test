@@ -26,25 +26,26 @@ router.get('/ratings', courseController.getRatings)
 // 取得首頁熱門課程資料
 router.get('/popular', courseController.getPopularCourses)
 
-
 // 收藏課程
 router.post('/favorites', ...handleMiddleware([isAuth], courseController.postFavoriteCourse))
 
 // 取得收藏課程
 router.get('/favorites/list', ...handleMiddleware([isAuth], courseController.getFavoriteCourse))
 
-// 收藏課程
+// 取消收藏課程
 router.delete('/favorites/:favoriteId', ...handleMiddleware([isAuth], courseController.deleteFavoriteCourse))
 
 // 取得單一課程資料，要放後面，其他 /xxx 要放前面
 router.get('/:courseId', courseController.getCourse)
 
 // 新增標題
-router.post('/create/title', ...handleMiddleware([isAuth], courseController.createCourseTitle)) // 新增課程
+router.post('/create/title', ...handleMiddleware([isAuth], courseController.createCourseTitle)) 
+
+// 儲存課程資訊
 router.post(
   '/:courseId/save',
   ...handleMiddleware([isAuth, validateSchema(saveCourseSchema)], courseController.saveCourse)
-) // 儲存課程資訊
+) 
 
 //新增課程類別
 router.post(
@@ -90,7 +91,7 @@ router.get('/:courseId/course-section', ...handleMiddleware([isAuth], courseCont
 //更新課程章節
 router.patch('/course-section/:courseSectionId', ...handleMiddleware([isAuth], courseController.patchCourseSection))
 
-//更新課程章節
+//刪除課程章節
 router.delete('/course-section/:courseSectionId', ...handleMiddleware([isAuth], courseController.deleteCourseSection))
 
 //取得所有課程, 測試用，塞資料，非正式格式
