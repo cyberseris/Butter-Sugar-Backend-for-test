@@ -71,12 +71,15 @@ const cartController = {
 
             const studentCourseRepo = dataSource.getRepository('student_course')
             const findCourseIds = await studentCourseRepo.find({
-                select:['course_id']
+                select:['course_id'],
+                where: {user_id:user_id}
             })
 
-            console.log("============findCourseIds=============")
-            console.log("findCourseIds: ", findCourseIds)
-            console.log("============findCourseIds=============")
+            const courseIds = findCourseIds.map(item => item.id).join(',')
+
+            if(courseIds.includes(course_id)){
+                return next(appError(400, "您已經購買過此課程"))
+            }
 
             try {
                 // 查看此使用者是否建立購物車

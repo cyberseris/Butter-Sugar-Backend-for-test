@@ -961,10 +961,6 @@ const courseController = {
     const avgRatingMap = Object.fromEntries(avgRatings.map(r => [r.course_id, r.avg_rating_score]))
     const myRatingMap = Object.fromEntries(myRatings.map(r => [r.course_id, r.rating_score]))
 
-    console.log("==============studentCourse==============")
-    console.log("findStudentCourse: ", findStudentCourse)
-    console.log("==============studentCourse==============")
-
     const result = findStudentCourse.map(studentCourse => ({
         id: studentCourse.course_id,
         teacher_id: studentCourse.teacher_id,
