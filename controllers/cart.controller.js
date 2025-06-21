@@ -202,7 +202,6 @@ const cartController = {
                 //只取出未存在原購物車的 id，加入購物車
                 let insertIds = isValidIds.filter(id => !cartItemIds.includes(id))
                 
-
                 //判斷是否有買過此課程
                 // 已購買
                 let myCourseIds = insertIds.filter(id => course_Ids.includes(id))
@@ -316,6 +315,22 @@ const cartController = {
             const cartItemsRepo = dataSource.getRepository('cart_items')
             const cartItemDetails = await getCartItemDetails(cartItemsRepo, cart_id)
             const course_ids = cartItemDetails.map(item =>item.course_id)
+
+            //取得我的課程資訊
+            const studentCourseRepo = dataSource.getRepository('student_course')
+            const findCourseIds = await studentCourseRepo.find({
+                select:['course_id'],
+                where: {user_id:user_id}
+            })
+
+            //取出課程 id
+            const studentCourseIds = findCourseIds.map(item => item.course_id)
+            //判斷課程是否購買
+            const alreadyBoughtIds = course_ids.filter( id => studentCourseIds.includes(id))
+            //判斷是否有買過此課程
+            if(!alreadyBoughtIds){
+                return next(appError(400, `您已購買過這些課程 ${alreadyBoughtIds}`))
+            }
 
             //回傳購物車課程數量跟總金額
             const summaryItems = await summaryCartItems(cartItemsRepo, cart_id) || { item_count: 0, total_price: 0 }
