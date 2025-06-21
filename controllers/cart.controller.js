@@ -345,7 +345,6 @@ const cartController = {
             if(alreadyBoughtIds.length){
                 return next(appError(400, `您已購買過這些課程 ${alreadyBoughtIds}`))
             }
-            return sendResponse(res, 200, true, '結帳測試')
 
             //回傳購物車課程數量跟總金額
             const summaryItems = await summaryCartItems(cartItemsRepo, cart_id) || { item_count: 0, total_price: 0 }
