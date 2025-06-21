@@ -325,12 +325,27 @@ const cartController = {
 
             //取出課程 id
             const studentCourseIds = findCourseIds.map(item => item.course_id)
+
+            console.log("===============studentCourseIds==============")
+            console.log("studentCourseIds: ", studentCourseIds)
+            console.log("===============studentCourseIds==============")
+
+            console.log("===============studentCourseIds==============")
+            console.log("course_ids: ", course_ids)
+            console.log("===============studentCourseIds==============")
+
             //判斷課程是否購買
             const alreadyBoughtIds = course_ids.filter( id => studentCourseIds.includes(id))
+
+            console.log("===============alreadyBoughtIds==============")
+            console.log("alreadyBoughtIds: ", alreadyBoughtIds)
+            console.log("===============alreadyBoughtIds==============")
+
             //判斷是否有買過此課程
             if(!alreadyBoughtIds){
                 return next(appError(400, `您已購買過這些課程 ${alreadyBoughtIds}`))
             }
+            return sendResponse(res, 200, true, '結帳測試')
 
             //回傳購物車課程數量跟總金額
             const summaryItems = await summaryCartItems(cartItemsRepo, cart_id) || { item_count: 0, total_price: 0 }
