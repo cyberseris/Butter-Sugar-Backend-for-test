@@ -64,3 +64,16 @@ JWT_SECRET=hexschool666
 - `.env 載入環境變數`
 - `npm run start:prod`
 - `npm run dev`
+
+## 除錯指令參考
+
+- `net stop winnat`
+- `net start winnat`
+- `docker container prune -f`
+- `docker system prune -f`
+- `docker image rmi seriskey/butter-sugar`
+- `docker volume ls`
+- `docker volume rm root_pgData`
+- `docker pull seriskey/butter-sugar`
+- `docker compose --env-file .env up -d`
+- `docker compose --env-file .env down`
