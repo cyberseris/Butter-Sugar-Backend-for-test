@@ -1,3 +1,5 @@
+# Butter & Sugar 烘焙課程影音平台
+
 ## 啟動方式
 
 1. 安裝相依套件
@@ -57,7 +59,6 @@ JWT_SECRET=hexschool666
 - `npm run db:truncate ` - 清空所有資料表資料
 - `npm run db:drop ` - 刪除所有資料表
 
-
 ## 開發建立環境順序
 
 - `npm i`
@@ -65,15 +66,29 @@ JWT_SECRET=hexschool666
 - `npm run start:prod`
 - `npm run dev`
 
-## 除錯指令參考
+### 前端網址
+- `https://buttersuger-frontend.zeabur.app/Home`
 
-- `net stop winnat`
-- `net start winnat`
-- `docker container prune -f`
-- `docker system prune -f`
-- `docker image rmi seriskey/butter-sugar`
-- `docker volume ls`
-- `docker volume rm root_pgData`
-- `docker pull seriskey/butter-sugar`
-- `docker compose --env-file .env up -d`
-- `docker compose --env-file .env down`
+### swagger 文件
+- `https://sugerbutter-test.zeabur.app/api-docs/`
+
+### 前端專案
+- `https://github.com/HatchiX8/Butter-Sugar-Frontend`
+
+### 後端專案
+- `https://github.com/qaz326978547/Butter-Suger-Back`
+
+### 登入, 使用者, 教師功能後端 demo 影片連結
+- `https://drive.google.com/file/d/1HxU4b5Q51YNF7uEhhoEZ91Rpdb8P2QNS/view?usp=sharing`
+
+### 新增課程功能後端 demo 影片連結
+- `https://drive.google.com/file/d/1gIadSsDq8v1HU8_89W-6Zu3Q9y4CaSVU/view?usp=sharing`
+
+### 課程問答功能後端 demo 影片連結
+- `https://drive.google.com/file/d/1vqTEXs-5gGpvtu1HaZzoSI_9-gjiwMvD/view?usp=sharing`
+
+### 評價課程功能後端 demo 影片連結
+- `https://drive.google.com/file/d/1XNd-UGF6I4z7CqLKDkq2II2TvWKjca_p/view?usp=drive_link`
+
+### 購物車、訂單、更新我的課程功能後端 demo 影片連結
+- `https://github.com/qaz326978547/Butter-Suger-Back`
