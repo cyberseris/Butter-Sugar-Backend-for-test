@@ -91,4 +91,7 @@ JWT_SECRET=hexschool666
 - `https://drive.google.com/file/d/1XNd-UGF6I4z7CqLKDkq2II2TvWKjca_p/view?usp=drive_link`
 
 ### 購物車、訂單、更新我的課程功能後端 demo 影片連結
-- `https://github.com/qaz326978547/Butter-Suger-Back`
+- `https://drive.google.com/file/d/1Db9N3J2xpsdVhdTZGfoDP4yI5pzrLSfQ/view?usp=sharing`
+
+### 跨境電商結帳(銀聯卡、支付寶、微信)
+- `https://drive.google.com/file/d/1UQ0Oi93KFiPPqHCPN6Ub_fp5e8syxOpr/view?usp=sharing`
