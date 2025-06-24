@@ -93,7 +93,7 @@ JWT_SECRET=hexschool666
 ### 購物車、訂單、更新我的課程功能後端 demo 影片連結
 - `https://drive.google.com/file/d/1Db9N3J2xpsdVhdTZGfoDP4yI5pzrLSfQ/view?usp=sharing`
 
-### 跨境電商結帳(銀聯卡、支付寶、微信，要先在 ezpay 註冊，新增測試用跨境商店，然後取得跨境商店的商店代號、HashKey、HashIV，再回到 newebpay 測試後台，啟用銀聯卡、支付寶、微信時，填寫 ezpay 跨境商店資料(商店代號、HashKey、HashIV))
+### 跨境電商結帳(銀聯卡、支付寶、微信，要先在 ezpay 註冊，新增測試用跨境商店，然後取得跨境商店的商店代號、HashKey、HashIV，再回到 newebpay 測試後台，啟用銀聯卡、支付寶、微信時，填寫 ezpay 跨境商店資料的商店代號、HashKey、HashIV)
 - `https://drive.google.com/file/d/1UQ0Oi93KFiPPqHCPN6Ub_fp5e8syxOpr/view?usp=sharing`
 
 ### 藍新金流回傳資料
